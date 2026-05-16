@@ -683,6 +683,34 @@
             border: none;
             filter: brightness(0.85) saturate(0.9);
         }
+
+        /* ===================== BACKGROUND KHUSUS HP ===================== */
+        /*
+         * Di HP (max-width: 767px):
+         *   - Parallax dimatikan (elemen .parallax-mirror disembunyikan)
+         *   - Semua section parallax pakai background-khusushp
+         *
+         * Di PC / Tablet (min-width: 768px):
+         *   - Parallax tetap berjalan normal dengan gambar yang sudah ada
+         */
+
+        @media (max-width: 767px) {
+
+            /* Sembunyikan layer parallax yang dibuat oleh parallax.js */
+            .parallax-mirror {
+                display: none !important;
+            }
+
+            /* Terapkan background-khusushp ke semua section parallax */
+            .parallax-window {
+                background-image: url('img/background-khusushp') !important;
+                background-size: cover !important;
+                background-position: center center !important;
+                background-attachment: scroll !important;
+                background-repeat: no-repeat !important;
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -1179,7 +1207,7 @@
                                             <div class="bp-avatar">
                                                 <img src="img/humas-aik.JPG" alt="Aik"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                                                <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
+                                                <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></ibling.style.display='flex';">
                                             </div>
                                             <div class="bp-member-name">Hastiti Maryam Mabruroh</div>
                                             <div class="bp-member-role">Humas II</div>
@@ -1462,12 +1490,6 @@
             </div>
 
         </div>
-    </div>
-
- 
-            
-        </div>
-    </div>
     </div>
 
     <!-- ===================== INI BAGIAN FOOTER WEBSITE BIAR KEtCeh Seperti gwej ===================== -->
