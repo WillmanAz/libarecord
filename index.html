@@ -1,689 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIBA RECORD</title>
+
+    <!-- ══ SEO: Title & Meta ══ -->
+    <title>KIR LIBA MAN 1 Yogyakarta | Kelompok Ilmiah Remaja Ulil Albab</title>
+    <meta name="description" content="Website resmi KIR LIBA (Kelompok Ilmiah Remaja Ulil Albab) MAN 1 Yogyakarta — organisasi riset dan karya ilmiah pelajar sejak 1991. Temukan program kerja, jurnal ilmiah, dan profil pengurus kami.">
+    <meta name="keywords" content="KIR LIBA, MAN 1 Yogyakarta, Kelompok Ilmiah Remaja, KIR LIBA MAN 1 Yogyakarta, Ulil Albab, karya ilmiah pelajar, organisasi KIR, libascienceclub">
+    <meta name="author" content="KIR LIBA MAN 1 Yogyakarta">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://libascienceclub.my.id/">
+
+    <!-- ══ SEO: Open Graph (WhatsApp, Facebook, dll.) ══ -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://libascienceclub.my.id/">
+    <meta property="og:title" content="KIR LIBA MAN 1 Yogyakarta | Kelompok Ilmiah Remaja Ulil Albab">
+    <meta property="og:description" content="Website resmi KIR LIBA MAN 1 Yogyakarta — organisasi riset dan karya ilmiah pelajar sejak 1991.">
+    <meta property="og:image" content="https://libascienceclub.my.id/img/header-liba2.png">
+    <meta property="og:locale" content="id_ID">
+    <meta property="og:site_name" content="KIR LIBA MAN 1 Yogyakarta">
+
+    <!-- ══ SEO: Twitter Card ══ -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="KIR LIBA MAN 1 Yogyakarta | Kelompok Ilmiah Remaja Ulil Albab">
+    <meta name="twitter:description" content="Website resmi KIR LIBA MAN 1 Yogyakarta — organisasi riset dan karya ilmiah pelajar sejak 1991.">
+    <meta name="twitter:image" content="https://libascienceclub.my.id/img/header-liba2.png">
+
+    <!-- ══ SEO: Schema JSON-LD (Organization) ══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "KIR LIBA MAN 1 Yogyakarta",
+      "alternateName": ["KIR LIBA", "Kelompok Ilmiah Remaja Ulil Albab", "LIBA Science Club"],
+      "url": "https://libascienceclub.my.id",
+      "logo": "https://libascienceclub.my.id/img/logo-barcode.png",
+      "description": "KIR LIBA (Kelompok Ilmiah Remaja Ulil Albab) adalah organisasi semi otonom di bawah OSIS Nurul Jadid MAN 1 Yogyakarta yang berdiri sejak 21 Mei 1991, berfokus pada riset ilmiah dan karya tulis pelajar.",
+      "foundingDate": "1991-05-21",
+      "email": "libascienceclub2526@gmail.com",
+      "telephone": "+6281215049831",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Jl. C. Simanjuntak No.60, Terban, Gondokusuman",
+        "addressLocality": "Yogyakarta",
+        "postalCode": "55223",
+        "addressRegion": "Daerah Istimewa Yogyakarta",
+        "addressCountry": "ID"
+      },
+      "parentOrganization": {
+        "@type": "EducationalOrganization",
+        "name": "MAN 1 Yogyakarta",
+        "url": "https://man1yogyakarta.sch.id"
+      },
+      "sameAs": [
+        "https://www.instagram.com/libascienceclub",
+        "https://www.tiktok.com/@liba_science"
+      ]
+    }
+    </script>
+
     <link rel="icon" type="image/png" href="img/favicon.png"/>
+
+    <!-- ══ Google Fonts ══ -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600&family=Oswald:wght@600&display=swap" rel="stylesheet">
+
+    <!-- ══ CSS Libraries ══ -->
     <link rel="stylesheet" href="css/all.min.css">
     <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/tooplate-antique-cafe.css">
 
-    <style>
+    <!-- ══ CSS Custom (dipindah dari <style> di index.html) ══ -->
+    <link rel="stylesheet" href="css/custom.css">
 
-        /* ===================== NAVBAR FLOATING PILL ===================== */
-
-        /* Override tooplate nav styles untuk pill baru */
-        #tm-nav {
-            background: transparent !important;
-            z-index: 1000;
-        }
-        #tm-nav.scroll #nav-pill {
-            background: rgba(9,60,93,0.82) !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1) !important;
-        }
-
-        .nav-link {
-            display: inline-block;
-            padding: 7px 14px;
-            color: rgba(147,191,207,0.9);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 0.03em;
-            border-radius: 999px;
-            transition: background 0.2s ease, color 0.2s ease;
-            white-space: nowrap;
-        }
-        .nav-link:hover, .nav-link.current {
-            background: rgba(147,191,207,0.18);
-            color: #fff;
-            border-bottom: none !important;
-        }
-
-        .mobile-nav-link {
-            display: block;
-            padding: 12px 20px;
-            color: rgba(147,191,207,0.9);
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            border-radius: 12px;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
-        .mobile-nav-link:hover {
-            background: rgba(147,191,207,0.15);
-            color: #fff;
-        }
-
-        /* Responsive breakpoint untuk navbar */
-        @media (max-width: 767px) {
-            #nav-links { display: none !important; }
-            #menu-toggle { display: block !important; }
-            #nav-pill { border-radius: 20px !important; padding: 10px 16px !important; }
-        }
-        @media (min-width: 768px) {
-            #mobile-menu { display: none !important; }
-            #menu-toggle { display: none !important; }
-        }
-
-        /* ===================== INTRO RESPONSIVE ===================== */
-        #intro .tm-intro-inner {
-            padding-top: 18rem;
-            padding-bottom: 8rem;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        @media (max-width: 640px) {
-            #intro .tm-intro-inner {
-                padding-top: 7rem;
-                padding-bottom: 4rem;
-                align-items: center;
-            }
-        }
-
-        /* ===================== SOSIAL MEDIA RESPONSIVE ===================== */
-        .sosmed-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
-        @media (max-width: 480px) {
-            .sosmed-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* ===================== GLASSMORPHISM iOS STYLE ===================== */
-
-        .glass-card {
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 24px;
-            box-shadow:
-                0 8px 32px rgba(0, 0, 0, 0.18),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-
-        .glass-card:hover {
-            box-shadow:
-                0 16px 48px rgba(0, 0, 0, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.55);
-            transform: translateY(-2px);
-        }
-
-        .tm-text-cyan {
-            text-shadow: 0 0 20px rgba(33, 94, 118, 0.8);
-            letter-spacing: 0.08em;
-        }
-
-        html { scroll-behavior: smooth; }
-        a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px; border-radius: 4px; }
-
-        /* ===================== TYPEWRITER ANIMATION BUAT TAGLINE KIR TERCINTTAA ILOVE KIR AYO CPT PURNA ===================== */
-        .typewriter-wrap {
-            display: inline-block;
-            position: relative;
-        }
-        .typewriter-text {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 3px solid rgba(147,191,207,0.9);
-            width: 0;
-            animation:
-                typing 2.5s steps(22, end) 0.8s forwards,
-                blink-caret 0.75s step-end infinite;
-        }
-        @keyframes typing {
-            from { width: 0; }
-            to   { width: 100%; }
-        }
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50%      { border-color: rgba(147,191,207,0.9); }
-        }
-
-        #intro .tm-intro-inner {
-            padding-top: 22rem;
-            padding-bottom: 10rem;
-        }
-
-        @media (max-width: 640px) {
-            #intro .tm-intro-inner {
-                padding-top: 8rem;
-                padding-bottom: 4rem;
-            }
-        }
-
-        .cta-glass {
-            background: rgba(0, 0, 0, 0.55);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 16px;
-            transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
-        }
-
-        .cta-glass:hover {
-            background: rgba(0, 0, 0, 0.72);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-        }
-
-        /* ===================== VISI MISI PROKER ===================== */
-
-        .vmp-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 24px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-        }
-
-        .vmp-section-title {
-            background: rgba(255, 255, 255, 0.18);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 16px;
-            color: #fff;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        /* Slider */
-        #proker-slider-outer {
-            overflow: hidden;
-        }
-
-        #proker-track {
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-        }
-
-        .proker-slide {
-            flex-shrink: 0;
-            width: 100%;
-        }
-        .proker-slide p {
-            text-align: justify;
-        }
-
-        /* Gambar bulat */
-        .proker-img-wrap {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.4);
-            background: rgba(255, 255, 255, 0.12);
-            margin: 0 auto 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .proker-img-wrap img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .proker-img-fallback {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.65);
-            font-size: 28px;
-        }
-
-        /* Dots */
-        .proker-dot {
-            height: 10px;
-            border-radius: 9999px;
-            border: none;
-            cursor: pointer;
-            transition: width 0.3s ease, background 0.3s ease;
-        }
-
-        .proker-dot.active   { width: 24px; background: rgba(255,255,255,0.95); }
-        .proker-dot.inactive { width: 10px; background: rgba(255,255,255,0.3);  }
-
-        /* Nav buttons */
-        .proker-nav-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.35);
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-        }
-
-        .proker-nav-btn:hover { background: rgba(255,255,255,0.35); }
-
-        /* ===================== BADAN PENGURUS ===================== */
-
-        /* Outer group slider (3 divisi per slide) */
-        #bp-group-outer { overflow: hidden; }
-        #bp-group-track {
-            display: flex;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
-        }
-        .bp-group-slide {
-            flex-shrink: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: row;
-            gap: 24px;
-            padding: 8px 0;
-            justify-content: center;
-            align-items: stretch;
-        }
-
-        /* Each division card */
-        .bp-div-card {
-            background: rgba(255, 255, 255, 0.13);
-            backdrop-filter: blur(18px) saturate(160%);
-            -webkit-backdrop-filter: blur(18px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.28);
-            border-radius: 20px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.18);
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .bp-div-header {
-            background: rgba(147, 191, 207, 0.25);
-            border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 16px;
-            text-align: center;
-        }
-
-        .bp-div-header h4 {
-            color: #093C5D;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            margin: 0;
-        }
-
-        /* Inner member slider */
-        .bp-member-outer { overflow: hidden; flex: 1; }
-        .bp-member-track {
-            display: flex;
-            transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
-            will-change: transform;
-            height: 100%;
-        }
-        .bp-member-slide {
-            flex-shrink: 0;
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 28px 16px 16px;
-            text-align: center;
-        }
-
-        /* Avatar — DIPERBESAR untuk desktop */
-        .bp-avatar {
-            width: 140px;
-            height: 185px;
-            border-radius: 16px;
-            overflow: hidden;
-            border: 2px solid rgba(147, 191, 207, 0.5);
-            background: rgba(147, 191, 207, 0.15);
-            margin: 0 auto 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .bp-avatar img { width:100%; height:100%; object-fit:cover; object-position: top center; }
-        .bp-avatar-icon {
-            color: rgba(12, 86, 113, 0.7);
-            font-size: 56px;
-        }
-
-        /* Mobile: kembalikan ke ukuran semula agar tidak merusak UX */
-        @media (max-width: 767px) {
-            .bp-avatar {
-                width: 100px;
-                height: 132px;
-            }
-            .bp-avatar-icon { font-size: 40px; }
-        }
-
-        .bp-member-name {
-            color: #fff;
-            font-size: 13px;
-            font-weight: 700;
-            line-height: 1.4;
-            margin-bottom: 2px;
-        }
-        .bp-member-role {
-            color: rgba(255, 255, 255, 0.85);
-            font-size: 11px;
-            font-weight: 300;
-        }
-
-        /* Inner member nav */
-        .bp-member-nav {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 8px 0 12px;
-        }
-        .bp-mini-dot {
-            width: 6px; height: 6px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            transition: background 0.25s, transform 0.25s;
-            padding: 0;
-        }
-        .bp-mini-dot.active   { background: rgba(255,255,255,0.9); transform: scale(1.3); }
-        .bp-mini-dot.inactive { background: rgba(255,255,255,0.25); }
-
-        .bp-mini-btn {
-            width: 22px; height: 22px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.15);
-            border: 1px solid rgba(255,255,255,0.25);
-            color: #fff;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            padding: 0;
-            line-height: 1;
-        }
-        .bp-mini-btn:hover { background: rgba(255,255,255,0.3); }
-
-        /* Group nav dots */
-        .bp-group-dot {
-            height: 10px;
-            border-radius: 9999px;
-            border: none;
-            cursor: pointer;
-            transition: width 0.3s ease, background 0.3s ease;
-        }
-        .bp-group-dot.active   { width: 28px; background: rgba(255,255,255,0.92); }
-        .bp-group-dot.inactive { width: 10px; background: rgba(255,255,255,0.28); }
-
-        /* Placeholder for single-member div */
-        .bp-single { text-align: center; }
-
-        @media (max-width: 767px) {
-            .bp-group-slide { flex-direction: column; }
-            .bp-div-card { min-width: 100%; }
-        }
-
-        /* ===================== PUBLIKASI ===================== */
-        #publikasi {
-            position: relative;
-        }
-
-        .pub-journal-box {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(24px) saturate(180%);
-            -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 28px;
-            box-shadow:
-                0 12px 48px rgba(0, 0, 0, 0.22),
-                inset 0 1px 0 rgba(255, 255, 255, 0.45);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            overflow: hidden;
-        }
-
-        .pub-journal-box:hover {
-            transform: translateY(-4px);
-            box-shadow:
-                0 20px 60px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.5);
-        }
-
-        .pub-logo-link {
-            display: inline-block;
-            transition: transform 0.25s ease, opacity 0.25s ease;
-            border-radius: 16px;
-            padding: 16px 24px;
-            background: rgba(255,255,255,0.12);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .pub-logo-link:hover {
-            transform: scale(1.05);
-            opacity: 0.9;
-            background: rgba(255,255,255,0.2);
-        }
-
-        .pub-logo-link img {
-            height: 80px;
-            width: auto;
-            display: block;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
-        }
-
-        .pub-divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #93BFCF, rgba(147,191,207,0.3));
-            border-radius: 2px;
-            margin: 20px auto;
-        }
-
-        .pub-badge {
-            display: inline-block;
-            background: rgba(147, 191, 207, 0.2);
-            border: 1px solid rgba(147, 191, 207, 0.4);
-            border-radius: 20px;
-            padding: 4px 14px;
-            font-size: 11px;
-            color: #93BFCF;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        /* ===================== SOSIAL MEDIA ===================== */
-        @media (max-width: 640px) {
-            #sosmed [style*="grid-template-columns: repeat(2, 1fr)"] {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        /* ===================== FOOTER BARU ===================== */
-        #site-footer {
-            background: #093C5D;
-            color: #fff;
-        }
-
-        .footer-inner {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 56px 32px 0;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 48px;
-            padding-bottom: 48px;
-            border-bottom: 1px solid rgba(255,255,255,0.12);
-        }
-
-        @media (max-width: 900px) {
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 32px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .footer-grid {
-                grid-template-columns: 1fr;
-                gap: 28px;
-            }
-            .footer-inner { padding: 40px 20px 0; }
-        }
-
-        .footer-col-title {
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.16em;
-            text-transform: uppercase;
-            color: #93BFCF;
-            margin-bottom: 18px;
-        }
-
-        .footer-brand-name {
-            font-family: 'Oswald', sans-serif;
-            font-size: 22px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 6px;
-        }
-
-        .footer-brand-sub {
-            font-size: 12px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-
-        .footer-address {
-            font-size: 13px;
-            color: rgba(255,255,255,0.6);
-            line-height: 1.8;
-        }
-
-        .footer-address a {
-            color: rgba(255,255,255,0.6);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .footer-address a:hover { color: #93BFCF; }
-
-        /* Social icons */
-        .footer-socials {
-            display: flex;
-            gap: 12px;
-            margin-top: 4px;
-        }
-
-        .footer-social-btn {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.18);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 16px;
-            text-decoration: none;
-            transition: background 0.2s, transform 0.2s, border-color 0.2s;
-        }
-
-        .footer-social-btn:hover {
-            background: rgba(147, 191, 207, 0.3);
-            border-color: #93BFCF;
-            transform: translateY(-2px);
-            color: #fff;
-        }
-
-        /* Quick links */
-        .footer-links {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.65);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.2s, padding-left 0.2s;
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: #93BFCF;
-            padding-left: 6px;
-        }
-
-        /* Copyright bar */
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 0;
-            font-size: 13px;
-            color: rgba(255,255,255,0.4);
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .footer-bottom a {
-            color: #93BFCF;
-            text-decoration: none;
-        }
-
-        .footer-bottom a:hover { text-decoration: underline; }
-
-        /* Map embed style */
-        .footer-map {
-            border-radius: 14px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.15);
-            height: 160px;
-            margin-bottom: 16px;
-        }
-
-        .footer-map iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            filter: brightness(0.85) saturate(0.9);
-        }
-    </style>
 </head>
 <body>
 
@@ -702,9 +95,9 @@
                     box-shadow:0 8px 32px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.12);
                     transition:background 0.3s ease, box-shadow 0.3s ease;
                 ">
-                    <!-- Logo kiri — bersih tanpa kotak -->
+                    <!-- Logo kiri -->
                     <a href="#intro" style="text-decoration:none; flex-shrink:0; display:flex; align-items:center; gap:10px;">
-                        <img src="img/logo-barcode.png" alt="LIBA Logo"
+                        <img src="img/logo-barcode.png" alt="Logo KIR LIBA MAN 1 Yogyakarta"
                              id="nav-logo-img"
                              onerror="this.style.display='none'; document.getElementById('nav-logo-fallback').style.display='flex';"
                              style="height:40px; width:auto; object-fit:contain; display:block;">
@@ -764,7 +157,7 @@
             <div class="tm-intro-inner">
 
                 <div class="glass-card p-8 sm:p-12 mb-6 text-center" style="width:100%;">
-                    <h1 class="tm-logo-font mb-5" style="color:#093C5D; font-size:clamp(2rem, 6vw, 3rem);">KIR-LIBA<br>MAN -1-  Yogyakarta</h1>
+                    <h1 class="tm-logo-font mb-5" style="color:#093C5D; font-size:clamp(2rem, 6vw, 3rem);">KIR LIBA <br >MAN -1- Yogyakarta</h1>
                     <div class="typewriter-wrap">
                         <p class="tm-text-cyan tm-text-2xl font-semibold tracking-widest typewriter-text">NO RESEARCH, NO FACT!</p>
                     </div>
@@ -772,7 +165,7 @@
 
                 <div class="glass-card p-8 sm:p-12 mb-6 text-center" style="width:100%;">
                     <p class="text-white leading-8 text-sm font-light drop-shadow">
-                        Kelompok Ilmiah Remaja ULIL ALBAB atau KIR LIBA merupakan organisasi bidang semi otonom
+                        Kelompok Ilmiah Remaja ULIL ALBAB atau <b>KIR LIBA</b> merupakan organisasi bidang semi otonom
                         di bawah OSIS Nurul Jadid. Sebelum organisasi ini berdiri berbagai lomba LKTI maupun Esai
                         diwakili oleh organisasi Pramuka (BARA MANSA). Hingga pada 21 Mei tahun 1991 organisasi KIR LIBA resmi
                         dibentuk untuk mewadahi siswa dan siswi yang memiliki kemampuan pada bidang riset dan penelitian.
@@ -968,45 +361,42 @@
     </div>
 
     <!-- ===================== BADAN PENGURUS ===================== -->
-   <!-- ===================== BADAN PENGURUS ===================== -->
-<div id="pengurus" style="position: relative; overflow: hidden;">
+    <div id="pengurus" style="position: relative; overflow: hidden;">
 
-    <!-- VIDEO BACKGROUND -->
-    <video
-        autoplay
-        muted
-        loop
-        playsinline
-        style="
+        <!-- VIDEO BACKGROUND -->
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            style="
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
+                object-fit: cover;
+                z-index: 0;
+                pointer-events: none;
+            ">
+            <source src="img/background-pengurus.mp4" type="video/mp4">
+        </video>
+
+        <!-- OVERLAY gelap -->
+        <div style="
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: cover;
-            z-index: 0;
-            pointer-events: none;
-        ">
-        <source src="img/background-pengurus.mp4" type="video/mp4">
-        <!-- Fallback kalau video gagal load -->
-    </video>
+            inset: 0;
+            background: rgba(5, 30, 50, 0.62);
+            z-index: 1;
+        "></div>
 
-    <!-- OVERLAY gelap biar teks tetap terbaca -->
-    <div style="
-        position: absolute;
-        inset: 0;
-        background: rgba(5, 30, 50, 0.62);
-        z-index: 1;
-    "></div>
+        <!-- KONTEN -->
+        <div class="container mx-auto tm-container py-24 sm:py-48" style="position: relative; z-index: 2;">
 
-    <!-- KONTEN (di atas video) -->
-    <div class="container mx-auto tm-container py-24 sm:py-48" style="position: relative; z-index: 2;">
+            <div class="text-center mb-16">
+                <h2 class="vmp-section-title py-4 px-12 text-4xl font-medium inline-block">
+                    Badan Pengurus Harian (BPH)
+                </h2>
+            </div>
 
-        <div class="text-center mb-16">
-            <h2 class="vmp-section-title py-4 px-12 text-4xl font-medium inline-block">
-                Badan Pengurus Harian (BPH)
-            </h2>
-        </div>
-
-            <!-- OUTER WRAPPER -->
             <div style="max-width:1100px; margin:0 auto; padding:0 24px;">
 
                 <!-- GROUP SLIDER -->
@@ -1021,20 +411,18 @@
                                 <div class="bp-div-header"><h4>Pembina</h4></div>
                                 <div class="bp-member-outer">
                                     <div class="bp-member-track" id="mt-pembina">
-                                        <!-- Member 1: Isti -->
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/pembina-isti.png" alt="Isti"
+                                                <img src="img/pembina-isti.png" alt="Isti Handayani S.Pd. Pembina KIR LIBA MAN 1 Yogyakarta"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
                                             <div class="bp-member-name">Isti Handayani,S.Pd.</div>
                                             <div class="bp-member-role">Pembina</div>
                                         </div>
-                                        <!-- Member 2: Bai -->
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/pembina-bai.jpg" alt="Ahmad Baidhowi, S.Pd"
+                                                <img src="img/pembina-bai.jpg" alt="Ahmad Baidhowi S.Pd Pembina KIR LIBA MAN 1 Yogyakarta"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1058,7 +446,7 @@
                                     <div class="bp-member-track" id="mt-ketua">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/ketua-kinan.png" alt="Kinanti Pinaring"
+                                                <img src="img/ketua-kinan.png" alt="Kinanti Pinaring Gusti Ketua Umum KIR LIBA MAN 1 Yogyakarta"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1067,7 +455,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- no nav for single member -->
                                 <div style="height:40px;"></div>
                             </div>
 
@@ -1078,7 +465,7 @@
                                     <div class="bp-member-track" id="mt-wakil">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/wakil-rivaya.JPG" alt="Rivaya"
+                                                <img src="img/wakil-rivaya.JPG" alt="Rivaya Shiddiqa Renata Wakil Ketua KIR LIBA MAN 1 Yogyakarta"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1090,7 +477,7 @@
                                 <div style="height:40px;"></div>
                             </div>
 
-                        </div><!--Selesai Coding Slide 1 Alhamdulillah -->
+                        </div><!-- end group slide 1 -->
 
                         <!-- ===== GROUP SLIDE 2: Sekretaris · Bendahara · Humas ===== -->
                         <div class="bp-group-slide">
@@ -1102,7 +489,7 @@
                                     <div class="bp-member-track" id="mt-sekre">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/sekretaris-hilya.JPG" alt="Hilya"
+                                                <img src="img/sekretaris-hilya.JPG" alt="Hilya Ayudya Dzakiyatunnisa Sekretaris KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1111,7 +498,7 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/sekretaris-alika.JPG" alt="Alika"
+                                                <img src="img/sekretaris-alika.JPG" alt="Farah Alika Yudha Sekretaris KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1135,7 +522,7 @@
                                     <div class="bp-member-track" id="mt-bendahara">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/bendahara-intan.JPG" alt="Intan"
+                                                <img src="img/bendahara-intan.JPG" alt="Faizah Intan Yuliana Bendahara KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1144,7 +531,7 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/bendahara-nadira.jpg" alt="Nadira"
+                                                <img src="img/bendahara-nadira.jpg" alt="Nadira Hanifa Shuba Bendahara KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1168,7 +555,7 @@
                                     <div class="bp-member-track" id="mt-humas">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/humas-willman.JPG" alt="Willman"
+                                                <img src="img/humas-willman.JPG" alt="Willman Arkana Zatari Humas KIR LIBA MAN 1 Yogyakarta"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1177,7 +564,7 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/humas-aik.JPG" alt="Aik"
+                                                <img src="img/humas-aik.JPG" alt="Hastiti Maryam Mabruroh Humas KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1194,9 +581,9 @@
                                 </div>
                             </div>
 
-                        </div><!-- YUK SATU SLIDE LAGII WILLMANNNN -->
+                        </div><!-- end group slide 2 -->
 
-                        <!-- ===== GROUP SLIDE 3: Diklat Sama Media ===== -->
+                        <!-- ===== GROUP SLIDE 3: Diklat & Media ===== -->
                         <div class="bp-group-slide" style="justify-content:center; gap:32px;">
 
                             <!-- DIKLAT -->
@@ -1206,7 +593,7 @@
                                     <div class="bp-member-track" id="mt-diklat">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/diklat-alfa.JPG" alt="Alfa"
+                                                <img src="img/diklat-alfa.JPG" alt="Al Afaafa Makruf Mahendra Koordinator Diklat KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1215,7 +602,7 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/diklat-aca.JPG" alt="Aca"
+                                                <img src="img/diklat-aca.JPG" alt="Salsabila Nur Hasan Anata Divisi Diklat KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1224,7 +611,7 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/diklat-ara.JPG" alt="Ara"
+                                                <img src="img/diklat-ara.JPG" alt="Tazqiya Elvarina Azzahra Divisi Diklat KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1249,7 +636,7 @@
                                     <div class="bp-member-track" id="mt-media">
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/media-fauza.JPG" alt="Anggota Media 1"
+                                                <img src="img/media-fauza.JPG" alt="Malika Fauzaty Kamilla Koordinator Media KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
@@ -1258,12 +645,12 @@
                                         </div>
                                         <div class="bp-member-slide">
                                             <div class="bp-avatar">
-                                                <img src="img/media-jaka.JPG" alt="Anggota Media"
+                                                <img src="img/media-jaka.JPG" alt="Jaka Abimanyu Setia Putra Divisi Media KIR LIBA"
                                                      onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                                                 <span class="bp-avatar-icon" style="display:none;"><i class="fas fa-user"></i></span>
                                             </div>
-                                            <div class="bp-member-name"> Jaka Abimanyu Setia Putra </div>
-                                            <div class="bp-member-role"> Anggota Divisi Media</div>
+                                            <div class="bp-member-name">Jaka Abimanyu Setia Putra</div>
+                                            <div class="bp-member-role">Anggota Divisi Media</div>
                                         </div>
                                     </div>
                                 </div>
@@ -1311,14 +698,11 @@
                 </h2>
             </div>
 
-            <!-- Kotak besar jurnal -->
             <div style="max-width: 860px; margin: 0 auto; padding: 0 24px;">
                 <div class="pub-journal-box p-10 sm:p-14 text-center">
 
-                    <!-- Badge -->
                     <div class="pub-badge">Jurnal Ilmiah</div>
 
-                    <!-- Judul -->
                     <h3 class="text-3xl sm:text-4xl font-semibold text-white mb-2" style="text-shadow: 0 2px 10px rgba(0,0,0,0.4);">
                         Jurnal Ulil Albab
                     </h3>
@@ -1326,28 +710,24 @@
                         Journal of Multidisciplinary Studies
                     </p>
 
-                    <!-- Logo clickable -->
                     <div class="flex justify-center mb-8">
                         <a href="https://journal.man1yogyakarta.sch.id/ulilalbab"
                            target="_blank"
                            rel="noopener noreferrer"
                            class="pub-logo-link"
-                           title="Buka Jurnal Ulil Albab">
+                           title="Buka Jurnal Ulil Albab MAN 1 Yogyakarta">
                             <img src="img/jurnalmansa.png"
-                                 alt="Logo Jurnal Ulil Albab"
+                                 alt="Logo Jurnal Ulil Albab MAN 1 Yogyakarta"
                                  onerror="this.onerror=null; this.src=''; this.parentElement.innerHTML='<span style=\'font-family:Oswald,sans-serif;font-size:22px;font-weight:700;color:#093C5D;letter-spacing:0.08em;\'>Ulil Albab</span><br><span style=\'font-size:10px;color:#555;letter-spacing:0.15em;\'>JOURNAL OF MULTIDISCIPLINARY STUDIES</span>';">
                         </a>
                     </div>
 
-                    <!-- Divider -->
                     <div class="pub-divider"></div>
 
-                    <!-- Penjelasan singkat -->
                     <p class="text-white text-sm sm:text-base font-light leading-8 mt-6" style="max-width:580px; margin-left:auto; margin-right:auto;">
                         <strong style font-semibold="color:#8595a0;">Jurnal Ulil Albab</strong> adalah jurnal ilmiah multidisiplin yang diterbitkan oleh wakil kepala madrasah bidang kehumasan MAN 1 Yogyakarta sebagai wadah publikasi karya tulis ilmiah siswa. Jurnal ini memuat penelitian orisinal di berbagai bidang seperti sains, sosial, humaniora, dan teknologi, guna mendorong budaya riset dan literasi ilmiah di kalangan pelajar.
                     </p>
 
-                    <!-- CTA button -->
                     <a href="https://journal.man1yogyakarta.sch.id/ulilalbab"
                        target="_blank"
                        rel="noopener noreferrer"
@@ -1367,29 +747,24 @@
 
     <!-- ===================== SOSIAL MEDIA ===================== -->
     <div id="sosmed" class="parallax-window" data-parallax="scroll" data-image-src="img/headerliba2a.png">
-        <div class="container mx-auto tm-container py-24 sm:py-48 ;">
+        <div class="container mx-auto tm-container py-24 sm:py-48">
 
-            <!-- Judul Section -->
             <div class="text-center mb-12">
-                <div class="margin-bottom: 20px;">
                 <h2 class="vmp-section-title py-4 px-12 text-4xl font-medium inline-block">
                     Sosial Media
                 </h2>
-                </div>
             </div>
-            
-            <!-- Kotak YouTube Embed -->
+
+            <!-- YouTube Embed -->
             <div style="max-width: 860px; margin: 0 auto 48px; padding: 0 24px; margin-top: 16px;">
                 <div class="pub-journal-box p-6 sm:p-8">
                     <p class="text-white text-center text-sm font-light mb-4" style="color:rgba(255, 255, 255, 0.9); letter-spacing:0.08em; text-transform:uppercase; font-size:11px; font-weight:800; padding-top: 4px;">
-                    
                         Tonton Konten Kolaborasi Kami di YouTube
                     </p>
-                    <!-- Responsive YouTube embed wrapper -->
                     <div style="position:relative; padding-bottom:56.25%; height:0; overflow:hidden; border-radius:16px; background:#000; margin-top: 16px;">
                         <iframe
                             src="https://www.youtube.com/embed/7ybl0qwQN94"
-                            title="YouTube video LIBA Record"
+                            title="Konten Kolaborasi KIR LIBA MAN 1 Yogyakarta"
                             style="position:absolute; top:0; left:0; width:100%; height:100%; border:none; border-radius:16px;"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             allowfullscreen
@@ -1458,26 +833,20 @@
                         <div style="font-size:12px; color:rgba(147,191,207,0.85);">081215049831 (a.n. Willman)</div>
                     </a>
 
-                </div><!-- end grid -->
+                </div><!-- end sosmed-grid -->
             </div>
 
         </div>
     </div>
 
- 
-            
-        </div>
-    </div>
-    </div>
-
-    <!-- ===================== INI BAGIAN FOOTER WEBSITE BIAR KEtCeh Seperti gwej ===================== -->
+    <!-- ===================== FOOTER ===================== -->
     <footer id="site-footer">
         <div class="footer-inner">
             <div class="footer-grid">
 
-                <!-- Kolom 1 Nama dn Alamat -->
+                <!-- Kolom 1: Nama & Alamat -->
                 <div>
-                    <div class="footer-brand-name">KIR LIBA </div>
+                    <div class="footer-brand-name">KIR LIBA</div>
                     <div class="footer-brand-sub">MAN 1 Yogyakarta<br>Kelompok Ilmiah Remaja Ulil Albab</div>
                     <div class="footer-address">
                         <p>Jl. C. Simanjuntak No.60,<br>Terban, Gondokusuman,<br>Kota Yogyakarta 55223</p>
@@ -1488,20 +857,20 @@
                     </div>
                 </div>
 
-                <!-- Kolom 2: Medsos tercintah  -->
+                <!-- Kolom 2: Media Sosial -->
                 <div>
                     <div class="footer-col-title">Media Sosial</div>
                     <div class="footer-socials">
-                        <a href="https://www.instagram.com/libascienceclub?igsh=MXI5aWlzNWNyZW5meA==" class="footer-social-btn" title="Instagram" aria-label="Instagram">
+                        <a href="https://www.instagram.com/libascienceclub?igsh=MXI5aWlzNWNyZW5meA==" class="footer-social-btn" title="Instagram KIR LIBA" aria-label="Instagram KIR LIBA">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="footer-social-btn" title="YouTube" aria-label="YouTube">
+                        <a href="#" class="footer-social-btn" title="YouTube KIR LIBA" aria-label="YouTube KIR LIBA">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="https://www.tiktok.com/@kirlibamansa?_t=8sTxM23vLAe&_r=1" class="footer-social-btn" title="TikTok" aria-label="TikTok">
+                        <a href="https://www.tiktok.com/@kirlibamansa?_t=8sTxM23vLAe&_r=1" class="footer-social-btn" title="TikTok KIR LIBA" aria-label="TikTok KIR LIBA">
                             <i class="fab fa-tiktok"></i>
                         </a>
-                        <a href="https://whatsapp.com/channel/0029Vb7pJGFICVfloXdmzE1U" class="footer-social-btn" title="Whatssapp" aria-label="Whatssapp">
+                        <a href="https://whatsapp.com/channel/0029Vb7pJGFICVfloXdmzE1U" class="footer-social-btn" title="WhatsApp Channel KIR LIBA" aria-label="WhatsApp Channel KIR LIBA">
                             <i class="fab fa-whatsapp"></i>
                         </a>
                     </div>
@@ -1536,183 +905,20 @@
             <!-- Copyright bar -->
             <div class="footer-bottom">
                 <span>© 2026 KIR LIBA MAN 1 Yogyakarta. All rights reserved.</span>
-                <span>Design: <a href="https://www.libarecord.com" target="_blank">libarecord.com</a></span>
+                <span>Design: <a href="https://www.libascienceclub.my.id" target="_blank">libarecord.com</a></span>
             </div>
 
         </div><!-- end footer-inner -->
     </footer>
 
     <!-- ===================== SCRIPTS ===================== -->
-
-    <!-- Proker Slider -->
-    <script>
-        (function () {
-            var current = 0;
-            var total   = 8;
-
-            function init() {
-                var track = document.getElementById('proker-track');
-                var dots  = document.querySelectorAll('.proker-dot');
-
-                if (!track) return;
-
-                function goTo(n) {
-                    current = (n + total) % total;
-                    track.style.transform = 'translateX(-' + (current * 100) + '%)';
-                    dots.forEach(function (d, i) {
-                        d.className = 'proker-dot ' + (i === current ? 'active' : 'inactive');
-                    });
-                }
-
-                document.getElementById('proker-next').addEventListener('click', function () { goTo(current + 1); });
-                document.getElementById('proker-prev').addEventListener('click', function () { goTo(current - 1); });
-
-                dots.forEach(function (d) {
-                    d.addEventListener('click', function () { goTo(parseInt(this.dataset.index)); });
-                });
-
-                setInterval(function () { goTo(current + 1); }, 4000);
-            }
-
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
-        })();
-    </script>
-
-    <!-- Badan Pengurus Slider -->
-    <script>
-    (function () {
-
-        /* ---- Inner member sliders ---- */
-        var memberStates = {};
-
-        function initMemberSlider(trackId) {
-            var track = document.getElementById(trackId);
-            if (!track) return;
-            var slides = track.querySelectorAll('.bp-member-slide');
-            var total  = slides.length;
-            memberStates[trackId] = { current: 0, total: total };
-        }
-
-        function memberGoTo(trackId, n) {
-            var state = memberStates[trackId];
-            if (!state) return;
-            state.current = (n + state.total) % state.total;
-            var track = document.getElementById(trackId);
-            track.style.transform = 'translateX(-' + (state.current * 100) + '%)';
-
-            document.querySelectorAll('[data-track="' + trackId + '"][data-idx]').forEach(function(dot) {
-                var idx = parseInt(dot.dataset.idx);
-                dot.className = 'bp-mini-dot ' + (idx === state.current ? 'active' : 'inactive');
-            });
-        }
-
-        function attachMemberNav() {
-            document.querySelectorAll('.bp-mini-btn[data-track]').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var trackId = this.dataset.track;
-                    var dir     = parseInt(this.dataset.dir);
-                    var state   = memberStates[trackId];
-                    if (state) memberGoTo(trackId, state.current + dir);
-                });
-            });
-            document.querySelectorAll('.bp-mini-dot[data-track]').forEach(function(dot) {
-                dot.addEventListener('click', function() {
-                    memberGoTo(this.dataset.track, parseInt(this.dataset.idx));
-                });
-            });
-        }
-
-        /* ---- Outer group slider ---- */
-        var groupCurrent = 0;
-        var groupTotal   = 3;
-
-        function groupGoTo(n) {
-            groupCurrent = (n + groupTotal) % groupTotal;
-            var track = document.getElementById('bp-group-track');
-            track.style.transform = 'translateX(-' + (groupCurrent * 100) + '%)';
-
-            document.querySelectorAll('.bp-group-dot').forEach(function(d, i) {
-                d.className = 'bp-group-dot ' + (i === groupCurrent ? 'active' : 'inactive');
-            });
-
-            var label = document.getElementById('bp-slide-label');
-            if (label) label.textContent = groupCurrent + 1;
-        }
-
-        function init() {
-            ['mt-pembina','mt-ketua','mt-wakil',
-             'mt-sekre','mt-bendahara','mt-humas',
-             'mt-diklat','mt-media'].forEach(initMemberSlider);
-
-            attachMemberNav();
-
-            document.getElementById('bp-next').addEventListener('click', function() { groupGoTo(groupCurrent + 1); });
-            document.getElementById('bp-prev').addEventListener('click', function() { groupGoTo(groupCurrent - 1); });
-
-            document.querySelectorAll('.bp-group-dot').forEach(function(d) {
-                d.addEventListener('click', function() { groupGoTo(parseInt(this.dataset.gi)); });
-            });
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', init);
-        } else {
-            init();
-        }
-    })();
-    </script>
-
+    <!-- Urutan penting: jQuery dulu, lalu library, lalu custom JS -->
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/parallax.min.js"></script>
     <script src="js/jquery.singlePageNav.min.js"></script>
-    <script>
-        $(function () {
-            var tmNav = $('#tm-nav');
+    <script src="js/proker-slider.js"></script>
+    <script src="js/bp-slider.js"></script>
+    <script src="js/main.js"></script>
 
-            // singlePageNav still handles .current class on nav links
-            tmNav.singlePageNav({ currentClass: 'current', selector: '.nav-link, .mobile-nav-link' });
-
-            // Scroll: darken pill
-            $(document).scroll(function () {
-                if ($(document).scrollTop() > 80) {
-                    tmNav.addClass('scroll');
-                } else {
-                    tmNav.removeClass('scroll');
-                }
-            });
-
-            // Mobile hamburger toggle
-            $('#menu-toggle').on('click', function () {
-                var mm = $('#mobile-menu');
-                if (mm.is(':visible')) {
-                    mm.slideUp(200);
-                } else {
-                    mm.slideDown(200);
-                }
-            });
-
-            // Close mobile menu when a link is clicked
-            $('.mobile-nav-link').on('click', function () {
-                $('#mobile-menu').slideUp(200);
-            });
-
-            // Smooth scroll for all anchor links
-            document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
-                anchor.addEventListener('click', function (e) {
-                    var href = this.getAttribute('href');
-                    if (href === '#') return;
-                    var target = document.querySelector(href);
-                    if (target) {
-                        e.preventDefault();
-                        target.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
-        });
-    </script>
 </body>
 </html>
