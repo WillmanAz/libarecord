@@ -62,8 +62,8 @@
     statusPill.textContent = isLolos ? "L O L O S" : "BELUM LOLOS";
 
     resultDesc.innerHTML = isLolos
-      ? `Berdasarkan hasil seleksi yang telah dilakukan oleh Panitia Open Recruitment LIBA Science Club 2029, peserta dengan identitas berikut dinyatakan <b>LOLOS</b> seleksi Open Recruitment LIBA Science Club 2029.`
-      : `Berdasarkan hasil seleksi yang telah dilakukan oleh Panitia Open Recruitment LIBA Science Club 2029, peserta dengan identitas berikut <b>belum dinyatakan lolos</b> pada seleksi tahun ini.`;
+      ? `Berdasarkan hasil seleksi yang telah dilakukan oleh Panitia Open Recruitment KIR Ulil Albab (KIR LIBA) 2026/2027, peserta dengan identitas berikut dinyatakan <b>LOLOS</b> seleksi Open Recruitment KIR LIBA 2026.`
+      : `Berdasarkan hasil seleksi yang telah dilakukan oleh Panitia Open Recruitment KIR Ulil Albab (KIR LIBA) 2026/2027, peserta dengan identitas berikut <b>belum dinyatakan lolos</b> pada seleksi tahun ini.`;
 
     document.getElementById("dataNama").textContent = peserta.nama;
     document.getElementById("dataNis").textContent = peserta.nis;
@@ -142,11 +142,11 @@
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    doc.text("LIBA SCIENCE CLUB", pageWidth / 2, 38, { align: "center" });
+    doc.text("KIR Ulil Albab (KIR LIBA)", pageWidth / 2, 38, { align: "center" });
 
     doc.setFontSize(11);
     doc.setFont("helvetica", "normal");
-    doc.text("Open Recruitment LIBA Science Club 2029", pageWidth / 2, 58, { align: "center" });
+    doc.text("Open Recruitment KIR Ulil Albab (KIR LIBA) 2026", pageWidth / 2, 58, { align: "center" });
 
     doc.setDrawColor(...gold);
     doc.setLineWidth(2);
@@ -168,7 +168,7 @@
       { align: "center" }
     );
     doc.text(
-      "dalam seleksi Open Recruitment LIBA Science Club 2029.",
+      "dalam seleksi Open Recruitment KIR Ulil Albab (KIR LIBA) 2026.",
       pageWidth / 2,
       161,
       { align: "center" }
@@ -235,7 +235,7 @@
     doc.setFontSize(8.5);
     doc.setTextColor(...gray);
     doc.text(
-      "Dokumen ini dihasilkan secara otomatis oleh Sistem Pengumuman Open Recruitment LIBA Science Club 2029.",
+      "Dokumen ini dihasilkan secara otomatis oleh Sistem Pengumuman Open Recruitment KIR Ulil Albab (KIR LIBA) 2026.",
       pageWidth / 2,
       pageHeight - 30,
       { align: "center" }
