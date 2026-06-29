@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hasil Seleksi — LIBA Science Club 2029</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<!-- QR Code generator -->
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<!-- Confetti effect -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+<!-- PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="page-shell">
+
+  <header class="site-header">
+    <div class="container">
+      <div class="brand-row">
+        <div class="brand-logo">
+          <img src="logo_oprec.png" alt="Logo LIBA Science Club" onerror="this.parentElement.innerHTML='LSC'">
+        </div>
+        <div class="brand-name">
+          <div class="name-main">KIR ULIL ALBAB</div>
+          <div class="name-sub">Open Recruitment 2026/2027</div>
+        </div>
+      </div>
+
+      <h1 class="page-title">HASIL SELEKSI</h1>
+      <p class="page-subtitle">Open Recruitment Kelompok Ilmiah Remaja Ulil ALbab (KIR LIBA) tahun 2026</p>
+      <div class="title-divider"></div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container" style="max-width:640px;">
+
+      <!-- Loading state while "checking" data -->
+      <div class="card" id="loadingState">
+        <div style="text-align:center;padding:20px 0;">
+          <div class="spinner" style="margin-bottom:16px;"></div>
+          <div style="font-size:14px;color:var(--gray-500);font-weight:500;">Memuat hasil seleksi...</div>
+        </div>
+      </div>
+
+      <!-- Not found state -->
+      <div class="card" id="notFoundState" style="display:none;text-align:center;">
+        <div style="font-size:40px;margin-bottom:6px;">⚠️</div>
+        <h2 style="font-family:var(--font-display);color:var(--navy-900);margin:0 0 10px;">Data Tidak Ditemukan</h2>
+        <p style="color:var(--gray-500);font-size:14px;line-height:1.7;max-width:420px;margin:0 auto 22px;">
+          NIS dan/atau Kode Pendaftaran yang Anda masukkan tidak sesuai dengan data peserta kami.
+          Pastikan Anda memasukkan data yang benar, atau hubungi panitia Open Recruitment.
+        </p>
+        <a href="index.html" class="btn btn-primary" style="display:inline-flex;width:auto;padding:13px 28px;">Kembali ke Beranda</a>
+      </div>
+
+      <!-- Result card -->
+      <div class="card" id="resultCard" style="display:none;">
+
+        <div class="status-banner" id="statusBanner">
+          <div class="status-title" id="statusTitle">SELAMAT</div>
+          <div class="status-pill" id="statusPill">LOLOS</div>
+        </div>
+
+        <p class="result-desc" id="resultDesc"></p>
+
+        <div class="divider"></div>
+
+        <table class="data-table">
+          <tr>
+            <td class="label">Nama</td>
+            <td class="value" id="dataNama">-</td>
+          </tr>
+          <tr>
+            <td class="label">NIS</td>
+            <td class="value" id="dataNis">-</td>
+          </tr>
+          <tr>
+            <td class="label">Kode Pendaftaran</td>
+            <td class="value" id="dataKode">-</td>
+          </tr>
+          <tr>
+            <td class="label">Nomor Registrasi</td>
+            <td class="value" id="dataNoReg">-</td>
+          </tr>
+          <tr>
+            <td class="label">Tanggal Pengumuman</td>
+            <td class="value" id="dataTanggal">-</td>
+          </tr>
+          <tr>
+            <td class="label">Status</td>
+            <td class="value" id="dataStatus">-</td>
+          </tr>
+        </table>
+
+        <!-- QR Code section, only for LOLOS -->
+        <div class="qr-section" id="qrSection" style="display:none;">
+          <div class="qr-box">
+            <div id="qrcode"></div>
+          </div>
+          <p class="qr-caption">
+            QR Code ini merupakan bukti resmi kelulusan dan digunakan saat proses registrasi ulang.
+          </p>
+        </div>
+
+        <!-- Motivation box, only for TIDAK LOLOS -->
+        <div class="motivation-box" id="motivationBox" style="display:none;">
+          Terima kasih atas partisipasi dan semangat yang telah Anda tunjukkan selama proses
+          seleksi Open Recruitment LIBA Science Club 2029. Hasil ini bukan akhir dari perjalanan —
+          tetap kembangkan rasa ingin tahu dan semangat belajar Anda. Kesempatan baik akan selalu
+          datang bagi mereka yang terus berusaha. Sampai jumpa di kesempatan berikutnya!
+        </div>
+
+        <div class="action-row no-print" id="actionRow">
+          <button class="btn btn-gold" id="downloadPdfBtn">⬇ Download Bukti Kelulusan (PDF)</button>
+          <button class="btn btn-outline" id="printBtn">🖨 Cetak</button>
+          <a href="index.html" class="btn btn-outline">← Kembali ke Beranda</a>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    © 2029 LIBA Science Club — Sistem Pengumuman Hasil Seleksi Open Recruitment
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script src="hasil.js"></script>
+</body>
+</html>

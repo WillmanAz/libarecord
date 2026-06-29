@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pengumuman Hasil Seleksi — LIBA Science Club 2029</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="verify-page">
+
+   <!-- Background hero: tekstur gelap, ganti .verify-hero-bg di style.css
+       dengan foto gedung/markas LIBA jika tersedia -->
+  <div class="verify-hero-bg"></div>
+  <div class="verify-hero-overlay"></div>
+
+  <div class="verify-shell">
+
+    <div class="verify-card">
+
+      <div class="verify-card-top">
+        <div class="verify-logo">
+       <img src="logo_oprec.png">
+      
+        </div>
+        <div class="verify-eyebrow">LIBA Science Club &middot; Open Recruitment 2029</div>
+      </div>
+
+      <h1 class="verify-title">HASIL SELEKSI</h1>
+      <p class="verify-subtitle">
+        Masukkan Nomor Induk Siswa (NIS) dan Kode Pendaftaran sesuai dengan data pendaftaran Anda.
+      </p>
+
+      <form id="verifyForm" novalidate>
+        <div class="verify-field" id="field-nis">
+          <label for="nis">Nomor Induk Siswa (NIS)</label>
+          <input type="text" id="nis" name="nis" placeholder="10 digit/angka tertera pada kartu peserta" autocomplete="off" inputmode="numeric">
+          <div class="verify-field-error">NIS wajib diisi dan hanya berupa angka.</div>
+        </div>
+
+        <div class="verify-field" id="field-kode">
+          <label for="kode">Kode Pendaftaran</label>
+          <input type="text" id="kode" name="kode" placeholder="Contoh: OPREC-LIBA29_001" autocomplete="off">
+          <div class="verify-field-error">Kode pendaftaran wajib diisi.</div>
+        </div>
+
+        <button type="submit" class="verify-submit" id="submitBtn">
+          Lihat Hasil Seleksi
+        </button>
+      </form>
+
+      <p class="verify-help">
+        Mengalami kendala? Hubungi panitia melalui kontak resmi LIBA Science Club.
+      </p>
+    </div>
+
+    <div class="verify-footer">
+      © 2026 LIBA Science Club
+    </div>
+
+  </div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">Sedang memverifikasi data peserta...</div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
