@@ -19,9 +19,9 @@
 
 const PESERTA_DATA = [
   {
-    nis: "5980",
+    nis: "240710",
     kode: "OPREC-LIBA29_001",
-    nama: "Aisyah Putri Ramadhani",
+    nama: "KINANTI PINARING GUSTI",
     noRegistrasi: "REG/LIBA29/0001",
     status: "LOLOS",
     tanggalPengumuman: "29 Juni 2026"
