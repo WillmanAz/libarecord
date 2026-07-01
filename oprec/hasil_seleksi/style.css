@@ -7,6 +7,7 @@
   --navy-900:#0a1f3d;
   --navy-800:#0f2a52;
   --navy-700:#163a6e;
+  --blue:#93BFCF;
   --gold-500:#1e3a8a;
   --gold-400:#2f55b3;
   --gold-100:#e3e9f7;
@@ -270,6 +271,11 @@ img{max-width:100%;display:block;}
   background:var(--white);
   color:var(--navy-800);
   border:1.5px solid var(--gray-300);
+}
+.btn-outline-print{
+  background:linear-gradient(135deg,var(--blue),var(--blue));
+  color:var(--gold-400);
+  box-shadow:0 8px 18px rgba(30,58,138,0.28);
 }
 .btn-outline:hover{border-color:var(--navy-700);}
 

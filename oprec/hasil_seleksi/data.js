@@ -1,6 +1,6 @@
 /* =========================================================
    data.js
-   Database peserta Open Recruitment LIBA Science Club 2029.
+   Database peserta Open Recruitment LIBA Science Club 2026.
 
    CARA MENAMBAH PESERTA BARU:
    Cukup tambahkan satu object baru ke dalam array PESERTA_DATA

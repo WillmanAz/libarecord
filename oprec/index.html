@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Open Recruitment KIR LIBA 2026/2027</title>
+<meta name="description" content="Open Recruitment KIR LIBA 2026/2027">
+
+<!-- Fonts -->
+<link rel="icon" type="image/png" href="favicon.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loader" aria-hidden="true">
+  <div class="loader-inner">
+    <div class="loader-mark">
+      <svg viewBox="0 0 48 48" width="48" height="48">
+        <circle cx="24" cy="24" r="20" fill="none" stroke="url(#loaderGrad)" stroke-width="1.5" stroke-dasharray="4 6"/>
+        <circle cx="24" cy="24" r="3" fill="#22D3EE"/>
+        <defs>
+          <linearGradient id="loaderGrad" x1="0" y1="0" x2="48" y2="48">
+            <stop offset="0%" stop-color="#3B82F6"/>
+            <stop offset="100%" stop-color="#A78BFA"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <p class="loader-text" id="loaderText">Initializing Research Database<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+    <div class="loader-bar"><div class="loader-bar-fill" id="loaderFill"></div></div>
+    <p class="loader-pct" id="loaderPct">00%</p>
+  </div>
+</div>
+
+<!-- ============ AMBIENT LAYERS ============ -->
+<div class="grid-bg" aria-hidden="true"></div>
+<canvas id="particles" aria-hidden="true"></canvas>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
+<!-- ============ SCROLL PROGRESS (right rail) ============ -->
+<nav class="rail" id="rail" aria-label="Progres bagian halaman">
+  <div class="rail-track"><div class="rail-fill" id="railFill"></div></div>
+  <ul class="rail-dots" id="railDots"></ul>
+</nav>
+
+<div class="top-progress" id="topProgress" aria-hidden="true"></div>
+
+<!-- ============ NAVBAR ============ -->
+<header class="navbar" id="navbar">
+  <div class="navbar-inner">
+    <a href="#home" class="brand">
+      <span class="brand-mark"></span>
+      <span class="brand-text">UKM<strong>RISET</strong></span>
+    </a>
+
+    
+    <nav class="nav-links" id="navLinks">
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#tentang" class="nav-link">Tentang</a>
+      <a href="#persyaratan" class="nav-link">Persyaratan</a>
+      <a href="#timeline" class="nav-link">Timeline</a>
+      <a href="#divisi" class="nav-link">Divisi</a>
+      <a href="#faq" class="nav-link">FAQ</a>
+      <a href="#kontak" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="navbar-actions">
+      <a href="https://forms.gle/Sk6TXbe3mLeBvbhw8" class="btn btn-primary btn-sm ripple">Daftar Sekarang</a>
+      <button class="hamburger" id="hamburger" aria-label="Buka menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home" class="mobile-link">Home</a>
+    <a href="#tentang" class="mobile-link">Tentang</a>
+    <a href="#persyaratan" class="mobile-link">Persyaratan</a>
+    <a href="#timeline" class="mobile-link">Timeline</a>
+    <a href="#divisi" class="mobile-link">Divisi</a>
+    <a href="#faq" class="mobile-link">FAQ</a>
+    <a href="#kontak" class="mobile-link">Contact</a>
+    <a href="#daftar" class="btn btn-primary mobile-cta ripple">Daftar Sekarang</a>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <canvas id="network" aria-hidden="true"></canvas>
+  <div class="hero-vignette" aria-hidden="true"></div>
+
+  <div class="hero-content" data-reveal>
+    
+    </span>
+
+    <h1 class="hero-title">
+      <span class="line">OPEN RECRUITMENT</span>
+      <span class="line accent-line">KIR LIBA 2026/2027</span>
+      <span class="line hero-sub-line">NO RESEARCH NO FACT!</span>
+    </h1>
+
+    <p class="hero-subtitle">Temukan potensi risetmu. Berkarya, berinovasi, dan berdampak bersama komunitas peneliti muda paling ambisius di kampus.</p>
+
+    <div class="hero-actions">
+      <a href="#daftar" class="btn btn-primary btn-lg ripple">
+        <span>Daftar Sekarang</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a href="#divisi" class="btn btn-ghost btn-lg ripple">Pelajari Divisi</a>
+    </div>
+
+    <div class="hero-countdown" id="countdown" aria-label="Hitung mundur penutupan pendaftaran">
+      <span class="countdown-label">PENDAFTARAN DITUTUP DALAM</span>
+      <div class="countdown-grid">
+        <div class="countdown-unit"><span class="countdown-num" id="cdDays">00</span><span class="countdown-key">Hari</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cdHours">00</span><span class="countdown-key">Jam</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cdMins">00</span><span class="countdown-key">Menit</span></div>
+        <div class="countdown-sep">:</div>
+        <div class="countdown-unit"><span class="countdown-num" id="cdSecs">00</span><span class="countdown-key">Detik</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-cue" aria-hidden="true">
+    <span>SCROLL</span>
+    <div class="scroll-cue-line"></div>
+  </div>
+</section>
+
+<!-- ============ TENTANG ============ -->
+<section class="section" id="tentang">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 01 — Tentang Kami</span>
+      <h2 class="section-title">Laboratorium ide untuk mahasiswa yang <span class="text-gradient">tidak puas dengan status quo.</span></h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-copy" data-reveal>
+        <p class="lead">Kelompok Ilmiah Remaja ULIL ALBAB atau KIR LIBA merupakan organisasi bidang semi otonom di bawah OSIS Nurul Jadid. Sebelum organisasi ini berdiri berbagai lomba LKTI maupun Esai diwakili oleh organisasi Pramuka (BARA MANSA). Hingga pada 21 Mei tahun 1991 organisasi KIR LIBA resmi dibentuk untuk mewadahi siswa dan siswi yang memiliki kemampuan pada bidang riset dan penelitian.</p>
+
+        <div class="vm-cards">
+          <div class="vm-card glass" data-tilt>
+            <span class="vm-icon"><i class="fa-solid fa-crosshairs"></i></span>
+            <h3>Visi</h3>
+            <p>Menciptakan KIR LIBA sebagai organisasi yang aktif berprestasi, baik di bidang karya ilmiah maupun berorganisasi. Anggota KIR diharapkan bisa jadi pribadi dengan pikiran jernih, akal murni, sesuai semangat Ulil Albab (LIBA).</p>
+          </div>
+          <div class="vm-card glass" data-tilt>
+            <span class="vm-icon"><i class="fa-solid fa-diagram-project"></i></span>
+            <h3>Misi</h3>
+            <p>1.Mengadakan kegiatan yang outputnya memiliki nilai berharga dan bisa menjadi tunjangan akademik.<br>
+2.Mendorong siswa/i anggota KIR LIBA untuk menyalurkan ide dengan membuat karya ilmiah yang akan terdapat pelatihannya<br>
+3.Menjadikan anggota organisasi yang memiliki potensi untuk berpikir kreatif dan inovatif melalui program kerja yang ada<br>
+4.Memanfaatkan teknologi untuk menunjang program kerja yang terdapat dalam KIR LIBA.<br>
+5.Membuat kolaborasi aktif dengan organisasi KIR yang ada di eksternal, supaya memiliki pengetahuan dan wawasan yang lebih luas serta berbagi ilmu pengetahuan.</p>
+          </div>
+          <div class="vm-card glass" data-tilt>
+            <span class="vm-icon"><i class="fa-solid fa-hands-holding-circle"></i></span>
+            <h3>Nilai</h3>
+            <p>Integritas ilmiah, kolaborasi, keberanian bereksperimen, dan dampak yang terukur.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-visual" data-reveal>
+        <div class="orbit-frame glass">
+          <div class="orbit-ring r1"></div>
+          <div class="orbit-ring r2"></div>
+          <div class="orbit-ring r3"></div>
+          <div class="orbit-core">
+            <i class="fa-solid fa-atom"></i>
+          </div>
+          <span class="orbit-node n1"><i class="fa-solid fa-flask"></i></span>
+          <span class="orbit-node n2"><i class="fa-solid fa-pen-nib"></i></span>
+          <span class="orbit-node n3"><i class="fa-solid fa-chart-line"></i></span>
+          <span class="orbit-node n4"><i class="fa-solid fa-users"></i></span>
+        </div>
+      </div>
+    </div>
+
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ WHY JOIN ============ -->
+<section class="section" id="mengapa">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 02 — Mengapa Bergabung</span>
+      <h2 class="section-title">Enam alasan mahasiswa memilih <span class="text-gradient">bertumbuh di sini.</span></h2>
+    </div>
+
+    <div class="why-grid">
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-microscope"></i></span>
+        <h3>Pengalaman Riset</h3>
+        <p>Terlibat langsung dalam proyek riset nyata sejak semester awal.</p>
+      </div>
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-trophy"></i></span>
+        <h3>Kompetisi Nasional</h3>
+        <p>Dibina untuk bersaing di PKM, LKTI, dan ajang ilmiah tingkat nasional.</p>
+      </div>
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-feather-pointed"></i></span>
+        <h3>Penulisan Ilmiah</h3>
+        <p>Dibimbing menulis proposal, jurnal, dan publikasi yang layak terbit.</p>
+      </div>
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-people-group"></i></span>
+        <h3>Networking</h3>
+        <p>Terhubung dengan peneliti, alumni, dan mitra dari berbagai institusi.</p>
+      </div>
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-chalkboard-user"></i></span>
+        <h3>Mentoring</h3>
+        <p>Pendampingan personal dari senior dan pembina berpengalaman.</p>
+      </div>
+      <div class="why-card glass" data-reveal data-tilt>
+        <span class="why-icon"><i class="fa-solid fa-book-open"></i></span>
+        <h3>Publikasi</h3>
+        <p>Peluang mempublikasikan karya di jurnal dan forum ilmiah resmi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PERSYARATAN ============ -->
+<section class="section" id="persyaratan">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 03 — Persyaratan</span>
+      <h2 class="section-title">Yang kami cari <span class="text-gradient">dari calon anggota.</span></h2>
+    </div>
+
+    <div class="req-grid">
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Mahasiswa aktif S1 Universitas Yogyakarta</p>
+      </div>
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Memiliki minat dan rasa ingin tahu terhadap riset</p>
+      </div>
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Mengisi formulir pendaftaran secara lengkap</p>
+      </div>
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Mengunggah esai karya tulis sesuai tema</p>
+      </div>
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Mengikuti akun Instagram resmi KIR LIBA @libascienceclub</p>
+      </div>
+      <div class="req-card glass" data-reveal>
+        <i class="fa-solid fa-circle-check"></i>
+        <p>Berkomitmen aktif dalam seluruh rangkaian kegiatan</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section class="section" id="timeline">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 04 — Timeline Seleksi</span>
+      <h2 class="section-title">Enam tahap menuju <span class="text-gradient">keanggotaan resmi.</span></h2>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line" aria-hidden="true"><div class="timeline-line-fill" id="timelineFill"></div></div>
+
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">01</span><h3>Pendaftaran</h3><p>Registrasi online melalui formulir resmi pada website ini.</p></div>
+        <div class="tl-node"></div>
+      </div>
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">02</span><h3>Seleksi Administrasi</h3><p>Verifikasi kelengkapan berkas dan data pendaftar.</p></div>
+        <div class="tl-node"></div>
+      </div>
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">03</span><h3>Penilaian Essay</h3><p>Esai dinilai berdasarkan gagasan, logika, dan orisinalitas.</p></div>
+        <div class="tl-node"></div>
+      </div>
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">04</span><h3>Wawancara</h3><p>Sesi wawancara untuk mengenal motivasi dan minat riset.</p></div>
+        <div class="tl-node"></div>
+      </div>
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">05</span><h3>Pengumuman</h3><p>Hasil akhir diumumkan melalui portal dan Instagram resmi.</p></div>
+        <div class="tl-node"></div>
+      </div>
+      <div class="tl-item" data-reveal>
+        <div class="tl-card glass"><span class="tl-index">06</span><h3>Welcoming Session</h3><p>Onboarding anggota baru dan pengenalan divisi.</p></div>
+        <div class="tl-node"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIVISI ============ -->
+<section class="section" id="divisi">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 05 — Divisi</span>
+      <h2 class="section-title">Pilih jalur yang <span class="text-gradient">paling menantangmu.</span></h2>
+    </div>
+
+    <div class="div-grid">
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-flask-vial"></i></span><span class="div-tag">R&D</span></div>
+        <h3>Penelitian & Pengembangan</h3>
+        <p>Merancang dan menjalankan proyek riset lintas disiplin dari hulu ke hilir.</p>
+        <div class="div-skills"><span>Metodologi</span><span>Analisis Data</span><span>Eksperimen</span></div>
+      </div>
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-pen-fancy"></i></span><span class="div-tag">SW</span></div>
+        <h3>Karya Tulis Ilmiah</h3>
+        <p>Fokus pada PKM, LKTI, proposal, dan publikasi jurnal ilmiah.</p>
+        <div class="div-skills"><span>Academic Writing</span><span>Sitasi</span><span>Review</span></div>
+      </div>
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-photo-film"></i></span><span class="div-tag">MP</span></div>
+        <h3>Media & Publikasi</h3>
+        <p>Mengelola branding, konten, dan dokumentasi seluruh kegiatan.</p>
+        <div class="div-skills"><span>Content</span><span>Fotografi</span><span>Copywriting</span></div>
+      </div>
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-handshake"></i></span><span class="div-tag">PR</span></div>
+        <h3>Hubungan Masyarakat</h3>
+        <p>Membangun kemitraan dan relasi dengan pihak eksternal.</p>
+        <div class="div-skills"><span>Negosiasi</span><span>Networking</span><span>Diplomasi</span></div>
+      </div>
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="div-tag">EO</span></div>
+        <h3>Event Organizer</h3>
+        <p>Merancang dan mengeksekusi seminar, workshop, dan kompetisi.</p>
+        <div class="div-skills"><span>Project Mgmt</span><span>Logistik</span><span>MC</span></div>
+      </div>
+      <div class="div-card glass" data-reveal data-tilt>
+        <div class="div-top"><span class="div-icon"><i class="fa-solid fa-swatchbook"></i></span><span class="div-tag">DC</span></div>
+        <h3>Desain & Kreatif</h3>
+        <p>Menerjemahkan gagasan menjadi identitas visual organisasi.</p>
+        <div class="div-skills"><span>UI/Grafis</span><span>Branding</span><span>Motion</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ALUR PENDAFTARAN ============ -->
+<section class="section" id="daftar">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 06 — Alur Pendaftaran</span>
+      <h2 class="section-title">Lima langkah, <span class="text-gradient">satu keputusan besar.</span></h2>
+    </div>
+
+    <div class="flow-grid" data-reveal>
+      <div class="flow-step glass"><span class="flow-num">01</span><p>Daftar</p></div>
+      <i class="fa-solid fa-arrow-right-long flow-arrow"></i>
+      <div class="flow-step glass"><span class="flow-num">02</span><p>Upload Essay</p></div>
+      <i class="fa-solid fa-arrow-right-long flow-arrow"></i>
+      <div class="flow-step glass"><span class="flow-num">03</span><p>Seleksi Administrasi</p></div>
+      <i class="fa-solid fa-arrow-right-long flow-arrow"></i>
+      <div class="flow-step glass"><span class="flow-num">04</span><p>Wawancara</p></div>
+      <i class="fa-solid fa-arrow-right-long flow-arrow"></i>
+      <div class="flow-step glass"><span class="flow-num">05</span><p>Pengumuman</p></div>
+    </div>
+
+    <div class="cta-panel glass" data-reveal>
+      <div>
+        <h3>Siap memulai perjalanan risetmu?</h3>
+        <p>Slot pendaftaran terbatas. Amankan tempatmu sebelum gelombang pertama ditutup.</p>
+      </div>
+      <a href="https://forms.gle/Sk6TXbe3mLeBvbhw8" class="btn btn-primary btn-lg ripple">
+        <span>Isi Formulir Pendaftaran</span>
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="faq">
+  <div class="container container-narrow">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 07 — FAQ</span>
+      <h2 class="section-title">Pertanyaan yang <span class="text-gradient">sering diajukan.</span></h2>
+    </div>
+
+    <div class="accordion" data-reveal>
+      <div class="acc-item glass">
+        <button class="acc-trigger" aria-expanded="false">
+          <span>Apakah mahasiswa baru boleh mendaftar?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="acc-panel"><p>Boleh. UKM Riset terbuka untuk seluruh mahasiswa aktif S1 dari segala angkatan, termasuk mahasiswa baru.</p></div>
+      </div>
+      <div class="acc-item glass">
+        <button class="acc-trigger" aria-expanded="false">
+          <span>Apakah harus punya pengalaman riset sebelumnya?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="acc-panel"><p>Tidak wajib. Yang lebih kami cari adalah rasa ingin tahu dan kemauan belajar; keterampilan riset akan dibina melalui mentoring.</p></div>
+      </div>
+      <div class="acc-item glass">
+        <button class="acc-trigger" aria-expanded="false">
+          <span>Apakah ada biaya pendaftaran?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="acc-panel"><p>Pendaftaran UKM Riset tidak dipungut biaya apa pun.</p></div>
+      </div>
+      <div class="acc-item glass">
+        <button class="acc-trigger" aria-expanded="false">
+          <span>Apakah mahasiswa dari semua fakultas bisa bergabung?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="acc-panel"><p>Bisa. UKM Riset bersifat lintas fakultas dan lintas disiplin ilmu.</p></div>
+      </div>
+      <div class="acc-item glass">
+        <button class="acc-trigger" aria-expanded="false">
+          <span>Apa yang terjadi setelah dinyatakan lolos?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="acc-panel"><p>Anggota baru mengikuti welcoming session, penempatan divisi, dan onboarding proyek riset pertama.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KONTAK ============ -->
+<section class="section" id="kontak">
+  <div class="container">
+    <div class="section-head" data-reveal>
+      <span class="eyebrow">// 08 — Kontak</span>
+      <h2 class="section-title">Ada pertanyaan? <span class="text-gradient">Hubungi kami.</span></h2>
+    </div>
+
+    <div class="contact-grid" data-reveal>
+      <a href="https://www.instagram.com/libascienceclub?igsh=MXI5aWlzNWNyZW5meA==" class="contact-card glass">
+        <i class="fa-brands fa-instagram"></i>
+        <div><span class="contact-label">Instagram</span><span class="contact-value">libascienceclub</span></div>
+      </a>
+      <a href="researchlibaalnesa@gmail.com" class="contact-card glass">
+        <i class="fa-solid fa-envelope"></i>
+        <div><span class="contact-label">Email</span><span class="contact-value">researchlibaalnesa@gmail.com</span></div>
+      </a>
+      <a href="wa.me/081215049831" class="contact-card glass">
+        <i class="fa-brands fa-whatsapp"></i>
+        <div><span class="contact-label">WhatsApp</span><span class="contact-value">+62 812-1504-9831</span></div>
+      </a>
+      <a href="libascienceclub.my.id" class="contact-card glass">
+        <i class="fa-solid fa-location-dot"></i>
+        <div><span class="contact-label">Laman Resmi</span><span class="contact-value">libascienceclub.my.id</span></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <div class="brand">
+        <span class="brand-mark"></span>
+        <span class="brand-text">UKM<strong>RISET</strong></span>
+      </div>
+      <p>Universitas Yogyakarta</p>
+      <p class="footer-copy">© 2026 UKM Riset. Seluruh hak cipta dilindungi.</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>Navigasi</h4>
+      <a href="#tentang">Tentang</a>
+      <a href="#persyaratan">Persyaratan</a>
+      <a href="#timeline">Timeline</a>
+      <a href="#divisi">Divisi</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Bantuan</h4>
+      <a href="#faq">FAQ</a>
+      <a href="#kontak">Contact</a>
+      <a href="#daftar">Daftar Sekarang</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Ikuti Kami</h4>
+      <div class="footer-social">
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Kembali ke atas">
+  <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<script src="script.js"></script>
+</body>
+</html>
