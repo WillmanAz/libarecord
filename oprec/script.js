@@ -226,6 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
   revealEls.forEach(el => revealObserver.observe(el));
 
+  /* safety net: force-reveal anything still hidden after 2.5s, in case a
+     browser quirk or a later error prevents the observer from firing */
+  setTimeout(() => {
+    document.querySelectorAll('[data-reveal]:not(.in-view)').forEach(el => el.classList.add('in-view'));
+  }, 2500);
+
   /* timeline items also get in-view class for node glow */
   document.querySelectorAll('.tl-item').forEach(el => {
     const obs = new IntersectionObserver((entries) => {
@@ -278,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------------------------------------------------------------------
      10. COUNTDOWN TIMER
   --------------------------------------------------------------------- */
-  const targetDate = new Date('2026-07-20T23:59:59+07:00').getTime();
+ const targetDate = new Date('2026-07-21T23:59:59+07:00').getTime();
   const cdDays = document.getElementById('cdDays');
   const cdHours = document.getElementById('cdHours');
   const cdMins = document.getElementById('cdMins');

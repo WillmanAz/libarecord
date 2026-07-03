@@ -309,10 +309,25 @@ button{ font-family:inherit; cursor:pointer; border:none; background:none; color
   background:linear-gradient(135deg, var(--blue), var(--purple));
   box-shadow:0 0 14px rgba(59,130,246,.7);
 }
+.brand-logo{
+  height:32px; width:32px; object-fit:contain;
+  filter:drop-shadow(0 0 8px rgba(59,130,246,.35));
+}
 .brand-text{
   font-family:var(--f-mono); font-size:14px; letter-spacing:.06em; color:var(--text-2);
 }
 .brand-text strong{ color:var(--text-1); font-weight:600; }
+
+.mobile-menu-header{
+  display:flex; align-items:center; gap:10px;
+  padding:20px 28px 14px;
+}
+
+.footer-logos{
+  display:flex; align-items:center; gap:16px; margin-bottom:18px;
+}
+.footer-logo{ height:40px; width:40px; object-fit:contain; }
+.footer-logo-divider{ width:1px; height:32px; background:var(--line-strong); }
 
 .nav-links{ display:flex; gap:34px; }
 .nav-link{
