@@ -126,9 +126,10 @@
                         <li><a href="#publikasi"   class="nav-link">Publikasi</a></li>
                         <li><a href="#sosmed"      class="nav-link">Sosial Media</a></li>
                         <li><a href="#site-footer" class="nav-link">Kontak</a></li>
+                        <li><a href="https://www.libascienceclub.my.id/oprec" class="nav-link">OPREC</a></li>
                     </ul>
                 </div>
-
+                
                 <!-- Mobile dropdown -->
                 <div id="mobile-menu" style="
                     display:none;
@@ -148,6 +149,7 @@
                         <li><a href="#publikasi"   class="mobile-nav-link">Publikasi</a></li>
                         <li><a href="#sosmed"      class="mobile-nav-link">Sosial Media</a></li>
                         <li><a href="#site-footer" class="mobile-nav-link">Kontak</a></li>
+                        <li><a href="https://www.libascienceclub.my.id/oprec" class="mobile-nav-link">OPREC</a></li>
                     </ul>
                 </div>
             </div>
@@ -897,6 +899,7 @@
                         <li><a href="#publikasi">Publikasi</a></li>
                         <li><a href="#sosmed">Sosial Media</a></li>
                         <li><a href="#about">Tentang Kami</a></li>
+                        <li><a href="https://www.libascienceclub.my.id/oprec">OPREC</a></li>
                     </ul>
                 </div>
 
@@ -910,6 +913,304 @@
 
         </div><!-- end footer-inner -->
     </footer>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+
+<style>
+  /* =========================================================
+     DESIGN TOKENS — samakan dengan tema website utama
+  ========================================================= */
+  :root{
+    --void:#05070A;
+    --panel:#111827;
+    --blue:#3B82F6;
+    --cyan:#22D3EE;
+    --indigo:#6366F1;
+    --purple:#A78BFA;
+    --text-1:#E9ECF3;
+    --text-2:#9AA4B8;
+    --text-3:#5C6A82;
+    --line: rgba(148,163,184,0.16);
+    --glass: rgba(17,24,39,0.72);
+    --ease: cubic-bezier(.16,.84,.44,1);
+  }
+
+  *{ box-sizing:border-box; }
+
+  /* =========================================================
+     OVERLAY
+  ========================================================= */
+  .popup-overlay{
+    position:fixed; inset:0; z-index:9999;
+    display:flex; align-items:center; justify-content:center;
+    padding:20px;
+    background:rgba(5,7,10,0.75);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+    opacity:0; visibility:hidden;
+    transition:opacity .4s var(--ease), visibility .4s var(--ease);
+  }
+  .popup-overlay.open{
+    opacity:1; visibility:visible;
+  }
+
+  /* =========================================================
+     MODAL CARD (glassmorphism, senada tema utama)
+  ========================================================= */
+  .popup-card{
+    position:relative;
+    width:100%; max-width:420px;
+    padding:44px 34px 34px;
+    text-align:center;
+    border-radius:22px;
+    background:var(--glass);
+    border:1px solid var(--line);
+    box-shadow:0 30px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.08);
+    transform:translateY(24px) scale(.96);
+    opacity:0;
+    transition:transform .45s var(--ease), opacity .45s var(--ease);
+  }
+  .popup-overlay.open .popup-card{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
+
+  /* subtle glow border */
+  .popup-card::before{
+    content:'';
+    position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background:linear-gradient(135deg, rgba(59,130,246,.45), transparent 45%, rgba(167,139,250,.35));
+    -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude;
+    pointer-events:none;
+  }
+
+  /* ambient glow behind card */
+  .popup-card::after{
+    content:'';
+    position:absolute; top:-40%; left:50%; transform:translateX(-50%);
+    width:280px; height:280px;
+    background:radial-gradient(circle, rgba(59,130,246,.25), transparent 70%);
+    z-index:-1; pointer-events:none;
+  }
+
+  /* close button */
+  .popup-close{
+    position:absolute; top:16px; right:16px;
+    width:34px; height:34px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.04);
+    border:1px solid var(--line);
+    color:var(--text-2);
+    cursor:pointer;
+    transition:all .25s var(--ease);
+  }
+  .popup-close:hover{
+    color:var(--cyan);
+    border-color:rgba(34,211,238,.5);
+    background:rgba(34,211,238,.08);
+    transform:rotate(90deg);
+  }
+  .popup-close svg{ width:16px; height:16px; }
+
+  /* badge */
+  .popup-badge{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:.1em;
+    padding:7px 14px; border-radius:100px;
+    border:1px solid rgba(34,211,238,.35);
+    background:rgba(34,211,238,.07);
+    color:var(--cyan);
+    margin-bottom:22px;
+  }
+  .popup-badge-dot{
+    width:6px; height:6px; border-radius:50%; background:var(--cyan);
+    box-shadow:0 0 8px var(--cyan);
+    animation:pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1; transform:scale(1);} 50%{opacity:.4; transform:scale(1.4);} }
+
+  /* icon */
+  .popup-icon{
+    width:56px; height:56px; margin:0 auto 20px;
+    border-radius:16px;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg, var(--blue), var(--indigo));
+    box-shadow:0 10px 30px -8px rgba(59,130,246,.6);
+  }
+  .popup-icon svg{ width:26px; height:26px; color:#fff; }
+
+  /* text */
+  .popup-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:24px;
+    line-height:1.3;
+    margin:0 0 12px;
+  }
+  .popup-title .gradient{
+    background:linear-gradient(90deg, var(--blue), var(--cyan) 60%, var(--purple));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .popup-desc{
+    font-size:14.5px;
+    color:var(--text-2);
+    line-height:1.6;
+    margin:0 0 28px;
+  }
+
+  /* CTA button */
+  .popup-cta{
+    position:relative; overflow:hidden;
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    width:100%;
+    padding:15px 24px;
+    font-family:'Inter', sans-serif; font-weight:600; font-size:14.5px;
+    color:#fff;
+    background:linear-gradient(135deg, var(--blue), var(--indigo));
+    border-radius:12px;
+    box-shadow:0 0 0 1px rgba(99,102,241,.4), 0 10px 26px -8px rgba(59,130,246,.6);
+    cursor:pointer;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+    text-decoration:none;
+  }
+  .popup-cta:hover{
+    transform:translateY(-2px);
+    box-shadow:0 0 0 1px rgba(34,211,238,.6), 0 14px 32px -8px rgba(34,211,238,.5);
+  }
+  .popup-cta svg{ width:15px; height:15px; }
+
+  .popup-cta .ripple-circle{
+    position:absolute; border-radius:50%;
+    background:rgba(255,255,255,.35);
+    transform:scale(0);
+    animation:ripple .6s ease-out;
+    pointer-events:none;
+  }
+  @keyframes ripple{ to{ transform:scale(3); opacity:0; } }
+
+  /* secondary dismiss link */
+  .popup-secondary{
+    display:block;
+    margin-top:16px;
+    font-size:13px;
+    color:var(--text-3);
+    cursor:pointer;
+    background:none; border:none;
+    font-family:inherit;
+    transition:color .25s ease;
+  }
+  .popup-secondary:hover{ color:var(--text-2); }
+
+  @media (prefers-reduced-motion: reduce){
+    .popup-overlay, .popup-card, .popup-close{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- =========================================================
+     POPUP MARKUP
+========================================================= -->
+<div class="popup-overlay" id="popupOverlay">
+  <div class="popup-card" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+
+    <button class="popup-close" id="popupClose" aria-label="Tutup popup">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+
+    <span class="popup-badge">
+      <span class="popup-badge-dot"></span>
+      OPEN RECRUITMENT 2026
+    </span>
+
+    <div class="popup-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 12l2 2 4-4"/>
+        <circle cx="12" cy="12" r="10"/>
+      </svg>
+    </div>
+
+    <h2 class="popup-title" id="popupTitle"><span class="gradient">Pendaftaran Telah Dibuka!</span></h2>
+    <p class="popup-desc">Open Recruitment KIR LIBA resmi dibuka. Isi formulir pendaftaran sekarang sebelum tanggal 20 Juli 2026.</p>
+
+    <a href="https://libascienceclub.my.id/oprec" target="_blank" rel="noopener" class="popup-cta" id="popupCta">
+      <span>Buka Web Pendaftaran</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M7 17L17 7M17 7H9M17 7V15"/>
+      </svg>
+    </a>
+
+    <button class="popup-secondary" id="popupLater">Nanti saja</button>
+  </div>
+</div>
+
+
+<script>
+  // =========================================================
+  // POPUP LOGIC — tinggal copy blok ini ke project lain
+  // =========================================================
+  (function () {
+    const overlay = document.getElementById('popupOverlay');
+    const closeBtn = document.getElementById('popupClose');
+    const laterBtn = document.getElementById('popupLater');
+    const ctaBtn = document.getElementById('popupCta');
+    const reopenBtn = document.getElementById('reopenBtn'); // hanya untuk demo
+
+    function openPopup() {
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePopup() {
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    // tampilkan otomatis saat halaman dibuka (delay singkat biar tidak "ngagetin")
+    window.addEventListener('load', () => {
+      setTimeout(openPopup, 600);
+    });
+
+    // tombol X
+    closeBtn.addEventListener('click', closePopup);
+
+    // tombol "Nanti saja"
+    laterBtn.addEventListener('click', closePopup);
+
+    // klik di luar card (backdrop) untuk menutup
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closePopup();
+    });
+
+    // tombol Escape untuk menutup
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && overlay.classList.contains('open')) closePopup();
+    });
+
+    // ripple effect pada tombol CTA
+    ctaBtn.addEventListener('click', function (e) {
+      const rect = this.getBoundingClientRect();
+      const circle = document.createElement('span');
+      const size = Math.max(rect.width, rect.height);
+      circle.className = 'ripple-circle';
+      circle.style.width = circle.style.height = size + 'px';
+      circle.style.left = (e.clientX - rect.left - size / 2) + 'px';
+      circle.style.top = (e.clientY - rect.top - size / 2) + 'px';
+      this.appendChild(circle);
+      setTimeout(() => circle.remove(), 650);
+      // popup otomatis tertutup begitu link form dibuka di tab baru
+      setTimeout(closePopup, 200);
+    });
+
+    // tombol demo untuk buka ulang (hapus di project asli)
+    if (reopenBtn) reopenBtn.addEventListener('click', openPopup);
+  })();
+</script>
 
     <!-- ===================== SCRIPTS ===================== -->
     <!-- Urutan penting: jQuery dulu, lalu library, lalu custom JS -->
