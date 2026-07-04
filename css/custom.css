@@ -26,6 +26,16 @@
     color: #fff;
     border-bottom: none !important;
 }
+.navbar-actions{ display:flex; align-items:center; gap:18px; }
+
+.btn-sm{ padding:10px 18px; font-size:13px; }
+.btn-lg{ padding:16px 30px; font-size:15px; }
+
+.btn-primary{
+  background:linear-gradient(135deg, var(--blue), var(--indigo));
+  color:#fff;
+  box-shadow:0 0 0 1px rgba(99,102,241,.4), 0 8px 24px -8px rgba(59,130,246,.6);
+}
 
 .mobile-nav-link {
     display: block;
@@ -491,6 +501,22 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     font-weight: 600;
     margin-bottom: 8px;
 }
+
+/* ===================== PUBLIKASI ===================== */
+.opr-badge {
+    display: inline-block;
+    background: rgba(147, 191, 207, 0.2);
+    border: 1px solid rgba(87, 151, 174, 0.4);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    color: #0a394a;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
 
 /* ===================== SOSIAL MEDIA ===================== */
 @media (max-width: 640px) {
