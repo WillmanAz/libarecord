@@ -249,8 +249,8 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     transition: width 0.3s ease, background 0.3s ease;
 }
 
-.proker-dot.active   { width: 24px; background: rgba(255,255,255,0.95); }
-.proker-dot.inactive { width: 10px; background: rgba(255,255,255,0.3);  }
+.proker-dot.active   { width: 24px; background: #355872; }
+.proker-dot.inactive { width: 10px; background: #8ab2d0);  }
 
 /* Nav buttons */
 .proker-nav-btn {
@@ -259,7 +259,7 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     border-radius: 50%;
     background: rgba(255,255,255,0.2);
     border: 1px solid rgba(255,255,255,0.35);
-    color: #fff;
+    color:#355872;";
     font-size: 18px;
     cursor: pointer;
     display: flex;
