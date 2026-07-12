@@ -3,6 +3,23 @@
    ========================================================= */
 
 (function () {
+  // Ganti dengan URL Web App Apps Script kamu (Deploy → Manage deployments)
+  const API_URL = "https://script.google.com/macros/s/AKfycbxyhA7E5u3fKO1eVteU5uo0qeNOaQ1BeAyr-KQ7NReh7ngmHr5YuMGN1VIk0zBSJAVLnw/exec";
+
+  /**
+   * Mencari data peserta lewat Google Apps Script (data disimpan di Google Sheet privat).
+   * Server hanya mengembalikan 1 peserta yang cocok, bukan seluruh database.
+   * @param {string} nis
+   * @param {string} kode
+   * @returns {Promise<object|null>}
+   */
+  async function findPeserta(nis, kode) {
+    const url = `${API_URL}?nis=${encodeURIComponent(nis)}&kode=${encodeURIComponent(kode)}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.found ? data.peserta : null;
+  }
+
   function getQueryParams() {
     const params = new URLSearchParams(window.location.search);
     return {
@@ -10,6 +27,7 @@
       kode: params.get("kode") || ""
     };
   }
+
 
   function show(el) { el.style.display = ""; }
   function hide(el) { el.style.display = "none"; }
@@ -78,6 +96,7 @@
     if (isLolos) {
       show(document.getElementById("qrSection"));
       hide(document.getElementById("motivationBox"));
+      show(document.getElementById("linkgrup"));
 
       const qrPayload = JSON.stringify({
         nama: peserta.nama,
@@ -98,6 +117,8 @@
       });
     } else {
       hide(document.getElementById("qrSection"));
+      hide(document.getElementById("linkgrup"));
+      hide(document.getElementById("printBtn"));
       show(document.getElementById("motivationBox"));
     }
 
@@ -245,18 +266,16 @@
   }
 
   // ===== Main flow =====
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", async () => {
     const { nis, kode } = getQueryParams();
 
-    // Simulate a short fetch delay for nicer perceived loading (also lets
-    // any future async data-source swap-in happen here without UI changes)
-    setTimeout(() => {
-      if (!nis || !kode) {
-        renderNotFound();
-        return;
-      }
+    if (!nis || !kode) {
+      renderNotFound();
+      return;
+    }
 
-      const peserta = findPeserta(nis, kode);
+    try {
+      const peserta = await findPeserta(nis, kode);
 
       if (!peserta) {
         renderNotFound();
@@ -264,6 +283,9 @@
       }
 
       renderResult(peserta);
-    }, 700);
+    } catch (err) {
+      console.error("Gagal mengambil data peserta:", err);
+      renderNotFound();
+    }
   });
 })();

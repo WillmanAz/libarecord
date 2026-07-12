@@ -51,14 +51,16 @@ const PESERTA_DATA = [
  * @param {string} kode
  * @returns {object|null}
  */
-function findPeserta(nis, kode) {
-  const normalize = (v) => String(v || "").trim().toLowerCase();
-  const nisQ = normalize(nis);
-  const kodeQ = normalize(kode);
-
-  return (
-    PESERTA_DATA.find(
-      (p) => normalize(p.nis) === nisQ && normalize(p.kode) === kodeQ
-    ) || null
-  );
+const API_URL = "https://script.google.com/macros/s/AKfycbxyhA7E5u3fKO1eVteU5uo0qeNOaQ1BeAyr-KQ7NReh7ngmHr5YuMGN1VIk0zBSJAVLnw/exec"; 
+async function findPeserta(nis, kode) {
+  const url = `${API_URL}?nis=${encodeURIComponent(nis)}&kode=${encodeURIComponent(kode)}`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.found ? data.peserta : null;
+  } catch (err) {
+    console.error("Gagal cek peserta:", err);
+    return null;
+  }
 }
+
