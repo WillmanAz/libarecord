@@ -259,7 +259,7 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     border-radius: 50%;
     background: #2e506a;
     border: 1px solid rgba(255,255,255,0.35);
-    color:#355872;";
+    color:#97d3d8;";
     font-size: 18px;
     cursor: pointer;
     display: flex;
@@ -268,7 +268,7 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     transition: background 0.2s;
 }
 
-.proker-nav-btn:hover { background: rgba(255,255,255,0.35); }
+.proker-nav-btn:hover { background: #fff; }
 
 /* ===================== BADAN PENGURUS ===================== */
 
