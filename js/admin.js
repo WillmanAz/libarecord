@@ -3,29 +3,51 @@ import {
   collection, query, where, orderBy, limit, getDocs, getDoc, doc,
   addDoc, setDoc, updateDoc, deleteDoc, serverTimestamp, Timestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { resetPassword } from "./auth.js";
+import { getKaryaOptions, saveKaryaOptions } from "./options.js";
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
 const isHttp = (u) => /^https?:\/\/\S+$/i.test(u);
+const pad = (n) => String(n).padStart(2, "0");
+const ymd = (ts) => { const d = ts.toDate(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+const fromYmd = (v) => new Date(`${v}T12:00:00`);
+const fmt = (ts) => ts ? ts.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }) : "-";
 
 function btn(label, color, handler) {
   const b = el("button", `${color} text-white px-3 py-1 rounded text-sm`, label);
+  b.type = "button";
   b.addEventListener("click", async () => {
     b.disabled = true;
-    try { await handler(); } catch (e) { alert("Gagal: " + e.message); b.disabled = false; }
+    try { await handler(); } catch (e) { if (e.message !== "batal") alert("Gagal: " + e.message); }
+    b.disabled = false;
   });
   return b;
 }
 function emptyRow(tbody, cols, msg) {
   const td = tbody.insertRow().insertCell();
-  td.colSpan = cols; td.className = "p-4 text-center text-gray-500"; td.textContent = msg;
+  td.colSpan = cols; td.className = "p-3 text-center text-gray-500"; td.textContent = msg;
+}
+const ask = (msg) => { if (!confirm(msg)) throw new Error("batal"); };
+
+// Kompres foto di browser (maks 900px, JPEG) lalu simpan sebagai teks kecil di dokumen. Tanpa Storage/URL.
+async function compressImage(file) {
+  if (!file.type.startsWith("image/")) throw new Error("File harus berupa gambar.");
+  const bmp = await createImageBitmap(file);
+  const scale = Math.min(1, 900 / bmp.width);
+  const c = document.createElement("canvas");
+  c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+  let q = 0.78, out = c.toDataURL("image/jpeg", q);
+  while (out.length > 150000 && q > 0.4) { q -= 0.08; out = c.toDataURL("image/jpeg", q); }
+  if (out.length > 400000) throw new Error("Foto terlalu besar, pilih foto lain.");
+  return out;
 }
 
-/* ===== 1. Verifikasi anggota ===== */
+/* ===== Verifikasi anggota ===== */
 export async function loadPendingMembers() {
   const snap = await getDocs(query(collection(db, "users"), where("role", "==", "pending")));
-  return snap.docs.map((d) => ({ id: d.id, ...d.data() }))
-    .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+  return snap.docs.map((d) => ({ id: d.id, ...d.data() })).sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
 }
 export async function setMemberRole(uid, role) {
   await updateDoc(doc(db, "users", uid), { role, verifiedAt: serverTimestamp(), verifiedBy: auth.currentUser.uid });
@@ -34,8 +56,7 @@ export const verifyMember = (uid) => setMemberRole(uid, "anggota");
 export const rejectMember = (uid) => setMemberRole(uid, "rejected");
 
 async function renderPending() {
-  const tbody = $("pending-body");
-  tbody.replaceChildren();
+  const tbody = $("pending-body"); tbody.replaceChildren();
   const members = await loadPendingMembers();
   if (!members.length) return emptyRow(tbody, 3, "Tidak ada pendaftar yang menunggu verifikasi.");
   for (const m of members) {
@@ -43,109 +64,200 @@ async function renderPending() {
     tr.insertCell().textContent = m.displayName || "-";
     tr.insertCell().textContent = m.email;
     const a = tr.insertCell(); a.className = "flex gap-2 p-2";
-    a.append(
-      btn("Verifikasi", "bg-green-600", async () => { await verifyMember(m.id); tr.remove(); }),
-      btn("Tolak", "bg-red-600", async () => { await rejectMember(m.id); tr.remove(); })
-    );
+    a.append(btn("Verifikasi", "bg-green-600", async () => { await verifyMember(m.id); tr.remove(); }),
+             btn("Tolak", "bg-red-600", async () => { await rejectMember(m.id); tr.remove(); }));
   }
 }
 
-/* ===== 2. Press release ===== */
-async function renderPress() {
-  const tbody = $("press-body");
-  tbody.replaceChildren();
-  const snap = await getDocs(query(collection(db, "publications"), orderBy("createdAt", "desc"), limit(20)));
-  if (snap.empty) return emptyRow(tbody, 2, "Belum ada press release.");
-  snap.forEach((d) => {
-    const tr = tbody.insertRow();
-    tr.insertCell().textContent = d.data().title;
-    const a = tr.insertCell(); a.className = "p-2";
-    a.append(btn("Hapus", "bg-red-600", async () => {
-      if (!confirm("Hapus press release ini?")) throw new Error("dibatalkan");
-      await deleteDoc(d.ref); tr.remove();
-    }));
-  });
-}
-function wirePress() {
-  $("press-form").addEventListener("submit", async (e) => {
+/* ===== Reset kata sandi ===== */
+function wireReset() {
+  $("reset-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target;
-    await addDoc(collection(db, "publications"), {
-      title: f.title.value.trim(), excerpt: f.excerpt.value.trim(), content: f.content.value.trim(),
-      coverUrl: isHttp(f.coverUrl.value.trim()) ? f.coverUrl.value.trim() : "",
-      createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
-    });
-    f.reset(); renderPress();
+    const email = e.target.email.value.trim();
+    try { await resetPassword(email); alert("Jika email terdaftar, tautan reset kata sandi sudah dikirim ke " + email + ". Minta anggota cek folder Spam."); e.target.reset(); }
+    catch (err) { alert("Gagal: " + err.message); }
   });
 }
 
-/* ===== 3. Karya ilmiah (simpan link file) ===== */
+/* ===== Press release (tambah / edit / hapus) ===== */
+let editId = null;
+function resetPressForm() {
+  editId = null;
+  const f = $("press-form"); f.reset();
+  f.publishedAt.value = ymd(Timestamp.now());
+  $("press-mode").textContent = "Tulis press release baru";
+  $("press-submit").textContent = "Terbitkan";
+  $("press-cancel").classList.add("hidden");
+  $("cover-preview").replaceChildren();
+}
+function startEdit(id, x) {
+  editId = id;
+  const f = $("press-form");
+  f.title.value = x.title || ""; f.excerpt.value = x.excerpt || ""; f.content.value = x.content || "";
+  f.publishedAt.value = ymd(x.publishedAt || x.createdAt || Timestamp.now());
+  f.cover.value = ""; f.removeCover.checked = false;
+  const prev = $("cover-preview"); prev.replaceChildren();
+  const src = x.cover || x.coverUrl;
+  if (src) { const i = el("img", "h-24 rounded"); i.src = src; i.alt = "Foto saat ini"; prev.append(i); }
+  $("press-mode").textContent = "Mengedit: " + x.title;
+  $("press-submit").textContent = "Simpan perubahan";
+  $("press-cancel").classList.remove("hidden");
+  f.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+async function renderPress() {
+  const tbody = $("press-body"); tbody.replaceChildren();
+  const snap = await getDocs(query(collection(db, "publications"), orderBy("createdAt", "desc"), limit(30)));
+  if (snap.empty) return emptyRow(tbody, 3, "Belum ada press release.");
+  snap.forEach((d) => {
+    const x = d.data();
+    const tr = tbody.insertRow();
+    tr.insertCell().textContent = x.title;
+    tr.insertCell().textContent = fmt(x.publishedAt || x.createdAt);
+    const a = tr.insertCell(); a.className = "flex gap-2 p-2";
+    a.append(btn("Edit", "bg-[#355872]", async () => startEdit(d.id, x)),
+             btn("Hapus", "bg-red-600", async () => { ask("Hapus press release ini?"); await deleteDoc(d.ref); tr.remove(); }));
+  });
+}
+function wirePress() {
+  resetPressForm();
+  $("press-cancel").addEventListener("click", resetPressForm);
+  $("press-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target, b = $("press-submit"); b.disabled = true;
+    try {
+      const data = {
+        title: f.title.value.trim(), excerpt: f.excerpt.value.trim(), content: f.content.value.trim(),
+        publishedAt: Timestamp.fromDate(fromYmd(f.publishedAt.value))
+      };
+      const file = f.cover.files[0];
+      if (file) { data.cover = await compressImage(file); data.coverUrl = ""; }
+      else if (f.removeCover.checked) { data.cover = ""; data.coverUrl = ""; }
+      if (editId) await updateDoc(doc(db, "publications", editId), { ...data, updatedAt: serverTimestamp() });
+      else await addDoc(collection(db, "publications"), { cover: "", ...data, createdAt: serverTimestamp(), createdBy: auth.currentUser.uid });
+      resetPressForm(); renderPress();
+    } catch (err) { alert("Gagal: " + err.message); }
+    b.disabled = false;
+  });
+}
+
+/* ===== Karya ilmiah + kategori/bidang ===== */
+let opts;
+const fillSelect = (sel, list) => { sel.replaceChildren(); list.forEach((v) => { const o = el("option", "", v); o.value = v; sel.append(o); }); };
+function renderChips(key) {
+  const box = $("chips-" + key); box.replaceChildren();
+  opts[key].forEach((v, i) => {
+    const chip = el("span", "inline-flex items-center gap-1 bg-slate-100 rounded-full px-3 py-1 text-sm", v);
+    const x = el("button", "text-red-600 font-bold ml-1", "×"); x.type = "button"; x.setAttribute("aria-label", "Hapus " + v);
+    x.onclick = async () => { if (!confirm(`Hapus "${v}" dari pilihan? Karya lama tetap menyimpan labelnya.`)) return; opts[key].splice(i, 1); await saveKaryaOptions(opts); loadOptions(); };
+    chip.append(x); box.append(chip);
+  });
+}
+async function loadOptions() {
+  opts = await getKaryaOptions();
+  fillSelect($("karya-kategori"), opts.kategori); fillSelect($("karya-bidang"), opts.bidang);
+  renderChips("kategori"); renderChips("bidang");
+}
+async function renderKarya() {
+  const tbody = $("karya-body"); tbody.replaceChildren();
+  const snap = await getDocs(query(collection(db, "karya_ilmiah"), orderBy("createdAt", "desc"), limit(30)));
+  if (snap.empty) return emptyRow(tbody, 3, "Belum ada karya.");
+  snap.forEach((d) => {
+    const x = d.data(), tr = tbody.insertRow();
+    tr.insertCell().textContent = x.title;
+    tr.insertCell().textContent = [x.year, x.category, x.bidang].filter(Boolean).join(" / ");
+    const a = tr.insertCell(); a.className = "p-2";
+    a.append(btn("Hapus", "bg-red-600", async () => { ask("Hapus karya ini?"); await deleteDoc(d.ref); tr.remove(); }));
+  });
+}
 function wireKarya() {
+  for (const key of ["kategori", "bidang"]) {
+    $("add-" + key).addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const v = e.target.v.value.trim();
+      if (!v || opts[key].includes(v)) return;
+      opts[key].push(v); await saveKaryaOptions(opts); e.target.reset(); loadOptions();
+    });
+  }
   $("karya-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const f = e.target;
     if (!isHttp(f.fileUrl.value.trim())) return alert("Link file harus diawali http(s)://");
     await addDoc(collection(db, "karya_ilmiah"), {
-      title: f.title.value.trim(),
-      authors: f.authors.value.split(",").map((s) => s.trim()).filter(Boolean),
-      year: Number(f.year.value), category: f.category.value.trim(),
+      title: f.title.value.trim(), authors: f.authors.value.split(",").map((s) => s.trim()).filter(Boolean),
+      year: Number(f.year.value), category: f.category.value, bidang: f.bidang.value,
       abstract: f.abstract.value.trim(), fileUrl: f.fileUrl.value.trim(),
       createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
     });
-    f.reset(); alert("Karya ilmiah tersimpan.");
+    f.reset(); renderKarya();
   });
 }
 
-/* ===== 4. URL pendek ===== */
+/* ===== Materi latihan rutin ===== */
+async function renderMateri() {
+  const tbody = $("materi-body"); tbody.replaceChildren();
+  const snap = await getDocs(query(collection(db, "materi_larut"), orderBy("date", "desc"), limit(30)));
+  if (snap.empty) return emptyRow(tbody, 3, "Belum ada materi.");
+  snap.forEach((d) => {
+    const x = d.data(), tr = tbody.insertRow();
+    tr.insertCell().textContent = `${x.hari}, ${fmt(x.date)}`;
+    tr.insertCell().textContent = x.title;
+    const a = tr.insertCell(); a.className = "p-2";
+    a.append(btn("Hapus", "bg-red-600", async () => { ask("Hapus materi ini?"); await deleteDoc(d.ref); tr.remove(); }));
+  });
+}
+function wireMateri() {
+  $("materi-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    if (!isHttp(f.fileUrl.value.trim())) return alert("Link file harus diawali http(s)://");
+    const dt = fromYmd(f.date.value);
+    await addDoc(collection(db, "materi_larut"), {
+      title: f.title.value.trim(), description: f.description.value.trim(), fileUrl: f.fileUrl.value.trim(),
+      date: Timestamp.fromDate(dt), hari: dt.toLocaleDateString("id-ID", { weekday: "long" }),
+      createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
+    });
+    f.reset(); renderMateri();
+  });
+}
+
+/* ===== URL pendek ===== */
 const randSlug = () => Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => "abcdefghijkmnpqrstuvwxyz23456789"[b % 32]).join("");
 function wireShort() {
   $("short-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target;
-    const url = f.targetUrl.value.trim();
-    const slug = (f.slug.value.trim() || randSlug()).toLowerCase();
+    const f = e.target, url = f.targetUrl.value.trim(), slug = (f.slug.value.trim() || randSlug()).toLowerCase();
     if (!isHttp(url)) return alert("URL tujuan harus diawali http(s)://");
     if (!/^[a-z0-9-]{3,40}$/.test(slug)) return alert("Slug: huruf kecil, angka, tanda minus (3-40 karakter).");
     if ((await getDoc(doc(db, "shortlinks", slug))).exists()) return alert("Slug sudah dipakai.");
     await setDoc(doc(db, "shortlinks", slug), { targetUrl: url, clicks: 0, createdAt: serverTimestamp(), createdBy: auth.currentUser.uid });
-    $("short-result").textContent = `${location.origin}/s/${slug}`;
-    f.reset();
+    $("short-result").textContent = `${location.origin}/s/${slug}`; f.reset();
   });
 }
 
-/* ===== 5. QR presensi ===== */
+/* ===== QR presensi ===== */
 const randToken = () => Array.from(crypto.getRandomValues(new Uint8Array(24)), (b) => b.toString(16).padStart(2, "0")).join("");
-
 async function renderSessions() {
-  const tbody = $("sesi-body");
-  tbody.replaceChildren();
+  const tbody = $("sesi-body"); tbody.replaceChildren();
   const snap = await getDocs(query(collection(db, "attendance_sessions"), orderBy("createdAt", "desc"), limit(10)));
   if (snap.empty) return emptyRow(tbody, 3, "Belum ada sesi presensi.");
   snap.forEach((d) => {
-    const s = d.data();
-    const live = s.active && s.expiresAt.toMillis() > Date.now();
-    const tr = tbody.insertRow();
-    tr.insertCell().textContent = s.title;
-    tr.insertCell().textContent = live ? "Aktif" : "Ditutup";
-    const a = tr.insertCell(); a.className = "flex gap-2 p-2";
+    const s = d.data(), live = s.active && s.expiresAt.toMillis() > Date.now(), tr = tbody.insertRow();
+    tr.insertCell().textContent = s.title; tr.insertCell().textContent = live ? "Aktif" : "Ditutup";
+    const a = tr.insertCell(); a.className = "flex flex-wrap gap-2 p-2";
     a.append(btn("Kehadiran", "bg-[#355872]", () => showAttendance(d.id, s.title)));
     if (live) {
-      a.append(btn("Tutup", "bg-red-600", async () => { await updateDoc(d.ref, { active: false }); renderSessions(); }));
-      a.append(btn("Tampilkan QR", "bg-[#093C5D]", async () => showQr(d.id, s.token, s.title)));
+      a.append(btn("Tutup", "bg-red-600", async () => { await updateDoc(d.ref, { active: false }); renderSessions(); }),
+               btn("QR", "bg-[#093C5D]", async () => showQr(d.id, s.token, s.title)));
     }
   });
 }
 function showQr(id, token, title) {
-  const box = $("qr-box");
-  box.replaceChildren();
+  const box = $("qr-box"); box.replaceChildren();
   new QRCode(box, { text: `LIBA|${id}|${token}`, width: 240, height: 240 });
   $("qr-title").textContent = title;
 }
 async function showAttendance(sid, title) {
-  const [att, users] = await Promise.all([
-    getDocs(query(collection(db, "attendance"), where("sessionId", "==", sid))),
-    getDocs(collection(db, "users"))
-  ]);
+  const [att, users] = await Promise.all([getDocs(query(collection(db, "attendance"), where("sessionId", "==", sid))), getDocs(collection(db, "users"))]);
   const names = Object.fromEntries(users.docs.map((u) => [u.id, u.data().displayName || u.data().email]));
   $("hadir-title").textContent = `${title}: ${att.size} hadir`;
   const ul = $("hadir-list"); ul.replaceChildren();
@@ -154,19 +266,18 @@ async function showAttendance(sid, title) {
 function wireQr() {
   $("qr-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const f = e.target;
-    const token = randToken();
+    const f = e.target, token = randToken();
     const ref = await addDoc(collection(db, "attendance_sessions"), {
       title: f.title.value.trim(), token, active: true,
       expiresAt: Timestamp.fromMillis(Date.now() + Number(f.minutes.value) * 60000),
       createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
     });
-    showQr(ref.id, token, f.title.value.trim());
-    f.reset(); renderSessions();
+    showQr(ref.id, token, f.title.value.trim()); f.reset(); renderSessions();
   });
 }
 
 export function initAdmin() {
-  wirePress(); wireKarya(); wireShort(); wireQr();
-  renderPending(); renderPress(); renderSessions();
+  wireReset(); wirePress(); wireKarya(); wireMateri(); wireShort(); wireQr();
+  const safe = (fn) => fn().catch((e) => console.error(fn.name, e));
+  [renderPending, renderPress, renderKarya, renderMateri, renderSessions, loadOptions].forEach(safe);
 }

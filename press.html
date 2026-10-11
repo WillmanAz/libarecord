@@ -1,11 +1,90 @@
 <!DOCTYPE html>
-<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" type="image/png" href="img/favicon.png"><title>Press Release | KIR LIBA MAN 1 Yogyakarta</title></head>
-<body class="min-h-screen bg-[#093C5D] p-4 sm:p-8">
-<div class="max-w-3xl mx-auto">
-  <header class="flex justify-between items-center mb-6 text-white"><h1 class="text-2xl font-semibold">Press release</h1><a href="index.html" class="underline text-sm">Beranda</a></header>
-  <div id="press" class="space-y-4"><p class="text-white/80">Memuat...</p></div>
-</div>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Press Release | KIR LIBA MAN 1 Yogyakarta</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&family=Oswald:wght@600&display=swap" rel="stylesheet">
+<style>body{font-family:'Raleway',sans-serif}.display{font-family:'Oswald',sans-serif;letter-spacing:.03em}.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}</style></head>
+<body class="bg-white text-slate-800">
+<header class="border-b-4 border-[#093C5D]">
+  <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+    <a href="press.html" class="display text-2xl text-[#093C5D]">LIBA <span class="text-[#5f8ea3]">PRESS</span></a>
+    <a href="index.html" class="text-sm underline text-[#355872]">Kembali ke beranda</a>
+  </div>
+</header>
+<main id="app" class="max-w-5xl mx-auto px-4 py-8"><p>Memuat...</p></main>
+<footer class="border-t mt-12 py-6 text-center text-xs text-slate-500">&copy; 2026 KIR LIBA MAN 1 Yogyakarta</footer>
 <script type="module">
-  import { loadPress } from "./js/public-data.js";
-  loadPress(document.getElementById("press")).catch(() => { document.getElementById("press").textContent = "Gagal memuat press release."; });
+  import { db } from "./js/firebase-config.js";
+  import { collection, query, orderBy, limit, startAfter, getDocs, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  const app = document.getElementById("app");
+  const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x !== undefined) e.textContent = x; return e; };
+  const dateOf = (x) => { const t = x.publishedAt || x.createdAt; return t ? t.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""; };
+  const imgOf = (x) => x.cover || x.coverUrl || "";
+  function cover(x, cls) {
+    const src = imgOf(x);
+    if (src) { const i = el("img", cls + " object-cover w-full"); i.src = src; i.alt = x.title; i.loading = "lazy"; return i; }
+    const ph = el("div", cls + " w-full flex items-center justify-center display text-4xl text-white/80", "LIBA");
+    ph.style.background = "linear-gradient(135deg,#093C5D,#5f8ea3)"; return ph;
+  }
+  const link = (id) => "press.html?id=" + encodeURIComponent(id);
+
+  /* ---------- Detail artikel ---------- */
+  async function showArticle(id) {
+    const snap = await getDoc(doc(db, "publications", id));
+    app.replaceChildren();
+    if (!snap.exists()) { app.append(el("p", "", "Berita tidak ditemukan.")); return; }
+    const x = snap.data(); document.title = x.title + " | KIR LIBA";
+    const art = el("article", "max-w-3xl mx-auto");
+    const back = el("a", "text-sm underline text-[#355872]", "\u2190 Semua press release"); back.href = "press.html";
+    art.append(back, el("p", "mt-6 text-xs font-semibold tracking-widest text-[#5f8ea3]", "PRESS RELEASE"),
+      el("h1", "display text-3xl sm:text-5xl text-[#093C5D] leading-tight mt-2", x.title),
+      el("p", "text-sm text-slate-500 mt-3 mb-6", dateOf(x) + " \u2022 KIR LIBA MAN 1 Yogyakarta"));
+    if (imgOf(x)) art.append(cover(x, "rounded-2xl max-h-[28rem] mb-8"));
+    String(x.content || "").split(/\n{2,}/).forEach((p) => art.append(el("p", "text-lg leading-8 mb-5 whitespace-pre-line", p.trim())));
+    app.append(art);
+  }
+
+  /* ---------- Daftar berita ---------- */
+  let last = null, first = true;
+  const PAGE = 9;
+  async function loadList() {
+    const q = last
+      ? query(collection(db, "publications"), orderBy("publishedAt", "desc"), startAfter(last), limit(PAGE))
+      : query(collection(db, "publications"), orderBy("publishedAt", "desc"), limit(PAGE));
+    const snap = await getDocs(q);
+    if (first) {
+      app.replaceChildren();
+      if (snap.empty) { app.append(el("p", "text-center p-10", "Belum ada press release.")); return; }
+      app.append(el("h1", "display text-3xl text-[#093C5D] mb-6", "Berita dan Press Release"));
+    }
+    const docs = snap.docs; last = docs[docs.length - 1] || last;
+    let rest = docs;
+    if (first) {
+      const d = docs[0], x = d.data(); rest = docs.slice(1);
+      const a = el("a", "grid md:grid-cols-2 gap-6 mb-10 group"); a.href = link(d.id);
+      const txt = el("div", "flex flex-col justify-center");
+      txt.append(el("span", "text-xs font-semibold tracking-widest text-[#5f8ea3]", "TERBARU"),
+        el("h2", "display text-3xl text-[#093C5D] mt-2 group-hover:underline", x.title),
+        el("p", "text-xs text-slate-500 my-3", dateOf(x)),
+        el("p", "leading-7 clamp3", x.excerpt || String(x.content || "").slice(0, 220)));
+      a.append(cover(x, "rounded-2xl h-64 md:h-72"), txt);
+      app.append(a);
+      app.append(el("div", "border-t mb-8"));
+      const grid = el("div", "grid sm:grid-cols-2 lg:grid-cols-3 gap-8"); grid.id = "grid"; app.append(grid);
+      const more = el("button", "block mx-auto mt-10 rounded-full border border-[#093C5D] text-[#093C5D] px-6 py-2 text-sm", "Muat berita lainnya"); more.id = "more"; more.hidden = true;
+      more.onclick = loadList; app.append(more);
+      first = false;
+    }
+    const grid = document.getElementById("grid");
+    for (const d of rest) {
+      const x = d.data(), a = el("a", "group block"); a.href = link(d.id);
+      a.append(cover(x, "rounded-xl h-44 mb-3"), el("p", "text-xs text-slate-500", dateOf(x)),
+        el("h3", "font-semibold text-lg text-[#093C5D] leading-snug group-hover:underline", x.title),
+        el("p", "text-sm text-slate-600 mt-1 clamp3", x.excerpt || String(x.content || "").slice(0, 140)));
+      grid.append(a);
+    }
+    document.getElementById("more").hidden = docs.length < PAGE;
+  }
+
+  const id = new URLSearchParams(location.search).get("id");
+  (id ? showArticle(id) : loadList()).catch((e) => { console.error(e); app.replaceChildren(el("p", "", "Gagal memuat berita. Muat ulang halaman.")); });
 </script></body></html>

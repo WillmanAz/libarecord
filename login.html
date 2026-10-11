@@ -12,6 +12,7 @@
     <input name="email" type="email" required placeholder="Email" class="w-full border rounded-lg p-3">
     <input name="password" type="password" required placeholder="Kata sandi" class="w-full border rounded-lg p-3">
     <button class="w-full bg-[#093C5D] text-white rounded-lg py-3 font-medium">Masuk</button>
+    <button type="button" id="forgot" class="text-sm underline text-[#355872]">Lupa kata sandi?</button>
   </form>
   <form id="register-form" class="space-y-3 hidden">
     <input name="name" required placeholder="Nama lengkap" class="w-full border rounded-lg p-3">
@@ -23,14 +24,15 @@
   <p id="error" class="mt-4 text-sm text-red-700"></p>
 </main>
 <script type="module">
-  import { login, register } from "./js/auth.js";
+  import { login, register, resetPassword } from "./js/auth.js";
   const $ = (id) => document.getElementById(id);
   const err = $("error");
   const msgs = {
     "auth/invalid-credential": "Email atau kata sandi salah.",
     "auth/email-already-in-use": "Email sudah terdaftar. Silakan masuk.",
     "auth/weak-password": "Kata sandi minimal 8 karakter.",
-    "auth/too-many-requests": "Terlalu banyak percobaan. Coba lagi nanti."
+    "auth/too-many-requests": "Terlalu banyak percobaan. Coba lagi nanti.",
+    "auth/invalid-email": "Format email tidak valid."
   };
   function show(which) {
     $("login-form").classList.toggle("hidden", which !== "login");
@@ -41,8 +43,17 @@
   }
   $("tab-login").onclick = () => show("login");
   $("tab-register").onclick = () => show("register");
+  $("forgot").onclick = async () => {
+    const email = document.querySelector("#login-form [name=email]").value.trim();
+    if (!email) { err.className = "mt-4 text-sm text-red-700"; err.textContent = "Isi email di kolom atas dulu, lalu klik Lupa kata sandi."; return; }
+    try {
+      await resetPassword(email);
+      err.className = "mt-4 text-sm text-green-700";
+      err.textContent = "Jika email terdaftar, tautan reset kata sandi sudah dikirim. Cek juga folder Spam.";
+    } catch (e) { err.className = "mt-4 text-sm text-red-700"; err.textContent = msgs[e.code] || "Gagal: " + e.message; }
+  };
   async function run(fn) {
-    err.textContent = "";
+    err.className = "mt-4 text-sm text-red-700"; err.textContent = "";
     try { await fn(); } catch (e) { err.textContent = msgs[e.code] || "Gagal: " + e.message; }
   }
   $("login-form").addEventListener("submit", (e) => { e.preventDefault(); const f = e.target; run(() => login(f.email.value, f.password.value)); });

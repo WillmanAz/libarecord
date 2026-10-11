@@ -1,7 +1,7 @@
 import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   doc, getDoc, setDoc, serverTimestamp
@@ -53,6 +53,10 @@ export async function login(email, password) {
   const role = await getRole(cred.user);
   const next = safeNext(new URLSearchParams(location.search).get("next"));
   location.href = next && canAccess(role, next) ? next : (HOME_BY_ROLE[role] || "pending.html");
+}
+
+export async function resetPassword(email) {
+  await sendPasswordResetEmail(auth, email);
 }
 
 export async function logout() {

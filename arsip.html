@@ -1,40 +1,123 @@
 <!DOCTYPE html>
-<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" type="image/png" href="img/favicon.png"><title>Arsip Karya Ilmiah | KIR LIBA</title></head>
-<body data-access="anggota" class="min-h-screen bg-[#093C5D]/95 p-4 sm:p-8">
-<div class="max-w-4xl mx-auto">
-  <header class="flex items-center justify-between mb-6 text-white">
-    <h1 class="text-2xl font-semibold">Arsip karya ilmiah</h1>
-    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="presensi.html" class="underline">Presensi</a><button id="logout" class="underline">Keluar</button></nav>
-  </header>
-  <input id="search" placeholder="Cari judul, penulis, atau kategori" class="w-full rounded-lg p-3 mb-5">
-  <div id="list" class="space-y-4"></div>
-</div>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Arsip | KIR LIBA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&family=Oswald:wght@600&display=swap" rel="stylesheet">
+<style>body{font-family:'Raleway',sans-serif}.display{font-family:'Oswald',sans-serif;letter-spacing:.04em}.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}</style></head>
+<body data-access="anggota" class="min-h-screen bg-slate-100 text-[#355872]">
+<header style="background:linear-gradient(135deg,#093C5D,#355872)" class="text-white px-4 pt-6 pb-16">
+  <div class="max-w-5xl mx-auto">
+    <nav class="flex justify-between text-sm mb-6"><a href="index.html" class="underline">Beranda</a>
+      <span class="flex gap-4"><a href="presensi.html" class="underline">Presensi</a><a href="admin.html" id="admin-link" class="underline hidden">Admin</a><button id="logout" class="underline">Keluar</button></span></nav>
+    <h1 class="display text-3xl sm:text-4xl">Arsip KIR LIBA</h1>
+    <p class="text-[#93BFCF] mt-1">Karya ilmiah dan materi latihan rutin</p>
+  </div>
+</header>
+<main class="max-w-5xl mx-auto px-4 -mt-10 pb-16">
+  <div class="flex gap-2 mb-4">
+    <button id="tab-karya" class="px-5 py-2 rounded-full text-sm font-medium bg-white text-[#093C5D] shadow">Karya Ilmiah</button>
+    <button id="tab-materi" class="px-5 py-2 rounded-full text-sm font-medium bg-white/70 text-[#355872]">Materi Latihan Rutin</button>
+  </div>
+
+  <section id="panel-karya">
+    <div class="bg-white rounded-2xl p-4 shadow grid sm:grid-cols-5 gap-2 mb-3">
+      <input id="k-search" placeholder="Cari judul atau penulis" class="border rounded-lg p-2 text-sm sm:col-span-2">
+      <select id="k-tahun" class="border rounded-lg p-2 text-sm"></select>
+      <select id="k-kategori" class="border rounded-lg p-2 text-sm"></select>
+      <select id="k-bidang" class="border rounded-lg p-2 text-sm"></select>
+    </div>
+    <div class="flex justify-between text-sm mb-3"><span id="k-count"></span><button id="k-reset" class="underline">Reset filter</button></div>
+    <div id="k-list" class="grid sm:grid-cols-2 gap-4"></div>
+  </section>
+
+  <section id="panel-materi" class="hidden">
+    <div class="bg-white rounded-2xl p-4 shadow grid sm:grid-cols-3 gap-2 mb-4">
+      <input id="m-search" placeholder="Cari materi" class="border rounded-lg p-2 text-sm sm:col-span-2">
+      <select id="m-hari" class="border rounded-lg p-2 text-sm"><option value="">Semua hari</option><option>Senin</option><option>Kamis</option></select>
+    </div>
+    <div id="m-list" class="space-y-6"></div>
+  </section>
+</main>
 <script type="module">
   import { guardPage, logout } from "./js/auth.js";
   import { db } from "./js/firebase-config.js";
+  import { getKaryaOptions } from "./js/options.js";
   import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-  await guardPage("anggota");
-  document.getElementById("logout").onclick = logout;
-  const list = document.getElementById("list");
-  const snap = await getDocs(query(collection(db, "karya_ilmiah"), orderBy("year", "desc")));
-  const items = snap.docs.map((d) => d.data());
-  function render(rows) {
-    list.replaceChildren();
-    if (!rows.length) { const p = document.createElement("p"); p.className = "text-white/80"; p.textContent = "Tidak ada karya yang cocok."; return list.append(p); }
+  const { role } = await guardPage("anggota");
+  const $ = (id) => document.getElementById(id);
+  const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x !== undefined) e.textContent = x; return e; };
+  $("logout").onclick = logout;
+  if (role === "bph") $("admin-link").classList.remove("hidden");
+
+  const PAL = ["bg-sky-100 text-sky-800", "bg-emerald-100 text-emerald-800", "bg-amber-100 text-amber-800", "bg-violet-100 text-violet-800", "bg-rose-100 text-rose-800", "bg-teal-100 text-teal-800"];
+  const pal = (s) => PAL[[...String(s)].reduce((a, c) => a + c.charCodeAt(0), 0) % PAL.length];
+  const safe = (u) => (/^https?:\/\//i.test(u) ? u : "#");
+  const load = (col, field) => getDocs(query(collection(db, col), orderBy(field, "desc"))).then((s) => s.docs.map((d) => d.data())).catch((e) => { console.error(col, e); return []; });
+  const [karya, materi, opts] = await Promise.all([load("karya_ilmiah", "year"), load("materi_larut", "date"), getKaryaOptions()]);
+
+  /* Tab */
+  function tab(which) {
+    $("panel-karya").classList.toggle("hidden", which !== "karya");
+    $("panel-materi").classList.toggle("hidden", which !== "materi");
+    $("tab-karya").className = "px-5 py-2 rounded-full text-sm font-medium shadow " + (which === "karya" ? "bg-white text-[#093C5D]" : "bg-white/70 text-[#355872]");
+    $("tab-materi").className = "px-5 py-2 rounded-full text-sm font-medium shadow " + (which === "materi" ? "bg-white text-[#093C5D]" : "bg-white/70 text-[#355872]");
+  }
+  $("tab-karya").onclick = () => tab("karya"); $("tab-materi").onclick = () => tab("materi");
+
+  /* Karya ilmiah */
+  const fill = (sel, label, vals) => { sel.replaceChildren(); const o = el("option", "", label); o.value = ""; sel.append(o); vals.forEach((v) => { const x = el("option", "", v); x.value = v; sel.append(x); }); };
+  const uniq = (a) => [...new Set(a.filter(Boolean))];
+  fill($("k-tahun"), "Semua tahun", uniq(karya.map((x) => x.year)).sort((a, b) => b - a).map(String));
+  fill($("k-kategori"), "Semua kategori", uniq([...opts.kategori, ...karya.map((x) => x.category)]));
+  fill($("k-bidang"), "Semua bidang", uniq([...opts.bidang, ...karya.map((x) => x.bidang)]));
+
+  function renderKarya() {
+    const q = $("k-search").value.toLowerCase(), y = $("k-tahun").value, c = $("k-kategori").value, b = $("k-bidang").value;
+    const rows = karya.filter((x) => (!y || String(x.year) === y) && (!c || x.category === c) && (!b || x.bidang === b)
+      && (!q || [x.title, ...(x.authors || [])].join(" ").toLowerCase().includes(q)));
+    $("k-count").textContent = `${rows.length} karya ditemukan`;
+    const list = $("k-list"); list.replaceChildren();
+    if (!rows.length) return list.append(el("p", "text-center p-8 sm:col-span-2", "Tidak ada karya yang cocok dengan filter."));
     for (const x of rows) {
-      const c = document.createElement("article"); c.className = "bg-white/95 rounded-xl p-5";
-      const h = document.createElement("h2"); h.className = "font-semibold text-[#093C5D]"; h.textContent = x.title;
-      const m = document.createElement("p"); m.className = "text-xs text-[#355872] mb-2";
-      m.textContent = (x.authors || []).join(", ") + " (" + x.year + ") - " + x.category;
-      const a = document.createElement("p"); a.className = "text-sm text-[#355872] mb-3"; a.textContent = x.abstract;
-      const l = document.createElement("a"); l.textContent = "Buka file"; l.className = "text-sm underline text-[#093C5D]";
-      l.href = /^https?:\/\//i.test(x.fileUrl) ? x.fileUrl : "#"; l.target = "_blank"; l.rel = "noopener noreferrer";
-      c.append(h, m, a, l); list.append(c);
+      const card = el("article", "bg-white rounded-2xl shadow overflow-hidden flex flex-col");
+      card.append(el("div", "h-1.5 bg-gradient-to-r from-[#093C5D] to-[#93BFCF]"));
+      const body = el("div", "p-5 flex flex-col gap-2 flex-1");
+      const tags = el("div", "flex flex-wrap gap-2 text-xs font-medium");
+      if (x.category) tags.append(el("span", "px-2 py-1 rounded-full " + pal(x.category), x.category));
+      if (x.bidang) tags.append(el("span", "px-2 py-1 rounded-full " + pal(x.bidang), x.bidang));
+      tags.append(el("span", "px-2 py-1 rounded-full bg-slate-100 text-slate-600", String(x.year)));
+      body.append(tags, el("h2", "font-semibold text-[#093C5D] text-lg leading-snug", x.title), el("p", "text-xs", (x.authors || []).join(", ")));
+      if (x.abstract) body.append(el("p", "text-sm leading-6 clamp3", x.abstract));
+      const a = el("a", "mt-auto self-start rounded-full bg-[#093C5D] text-white text-sm px-4 py-2", "Buka karya"); a.href = safe(x.fileUrl); a.target = "_blank"; a.rel = "noopener noreferrer";
+      body.append(a); card.append(body); list.append(card);
     }
   }
-  render(items);
-  document.getElementById("search").addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase();
-    render(items.filter((x) => [x.title, x.category, ...(x.authors || [])].join(" ").toLowerCase().includes(q)));
-  });
+  ["k-search", "k-tahun", "k-kategori", "k-bidang"].forEach((id) => $(id).addEventListener("input", renderKarya));
+  $("k-reset").onclick = () => { ["k-search", "k-tahun", "k-kategori", "k-bidang"].forEach((id) => ($(id).value = "")); renderKarya(); };
+  renderKarya();
+
+  /* Materi latihan rutin per hari */
+  function renderMateri() {
+    const q = $("m-search").value.toLowerCase(), h = $("m-hari").value;
+    const rows = materi.filter((x) => (!h || x.hari === h) && (!q || (x.title + " " + (x.description || "")).toLowerCase().includes(q)));
+    const list = $("m-list"); list.replaceChildren();
+    if (!rows.length) return list.append(el("p", "text-center p-8", "Belum ada materi."));
+    const groups = new Map();
+    for (const x of rows) { const d = x.date.toDate(); const k = d.toLocaleDateString("id-ID", { month: "long", year: "numeric" }); if (!groups.has(k)) groups.set(k, []); groups.get(k).push([x, d]); }
+    for (const [month, items] of groups) {
+      const sec = el("div"); sec.append(el("h2", "display text-xl text-[#093C5D] mb-3", month));
+      const col = el("div", "space-y-3");
+      for (const [x, d] of items) {
+        const row = el("div", "bg-white rounded-2xl shadow p-4 flex gap-4 items-center");
+        const date = el("div", "shrink-0 w-16 text-center rounded-xl bg-[#093C5D] text-white py-2");
+        date.append(el("div", "text-2xl font-semibold leading-none", String(d.getDate())), el("div", "text-xs mt-1", x.hari));
+        const mid = el("div", "flex-1 min-w-0"); mid.append(el("h3", "font-semibold text-[#093C5D]", x.title));
+        if (x.description) mid.append(el("p", "text-sm", x.description));
+        const a = el("a", "shrink-0 rounded-full border border-[#093C5D] text-[#093C5D] text-sm px-4 py-2", "Buka materi"); a.href = safe(x.fileUrl); a.target = "_blank"; a.rel = "noopener noreferrer";
+        row.append(date, mid, a); col.append(row);
+      }
+      sec.append(col); list.append(sec);
+    }
+  }
+  ["m-search", "m-hari"].forEach((id) => $(id).addEventListener("input", renderMateri));
+  renderMateri();
 </script></body></html>

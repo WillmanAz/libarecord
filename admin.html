@@ -1,45 +1,71 @@
 <!DOCTYPE html>
-<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" type="image/png" href="img/favicon.png"><title>Dashboard Admin | KIR LIBA</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script></head>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dashboard Admin | KIR LIBA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>.in{border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem;width:100%;background:#fff}.card{background:#fff;border-radius:.75rem;padding:1.25rem;box-shadow:0 1px 2px rgba(0,0,0,.06)}.btnp{background:#093C5D;color:#fff;border-radius:.5rem;padding:.5rem 1rem}label{font-size:.75rem;color:#355872;display:block;margin-bottom:2px}</style></head>
 <body data-access="bph" class="bg-slate-100 p-4 sm:p-8">
 <div class="max-w-5xl mx-auto space-y-6">
   <header class="flex justify-between items-center"><h1 class="text-2xl font-semibold text-[#093C5D]">Dashboard BPH</h1>
-    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="arsip.html" class="underline">Arsip</a><button id="logout" class="underline">Keluar</button></nav></header>
+    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="arsip.html" class="underline">Arsip</a><a href="press.html" class="underline">Press</a><button id="logout" class="underline">Keluar</button></nav></header>
 
-  <section class="bg-white rounded-xl p-5 shadow-sm"><h2 class="font-semibold mb-3">Verifikasi pendaftar</h2>
+  <section class="card"><h2 class="font-semibold mb-3">Verifikasi pendaftar</h2>
     <table class="w-full text-sm"><thead><tr class="text-left"><th>Nama</th><th>Email</th><th>Aksi</th></tr></thead><tbody id="pending-body"></tbody></table></section>
 
-  <section class="bg-white rounded-xl p-5 shadow-sm"><h2 class="font-semibold mb-3">Press release</h2>
-    <form id="press-form" class="grid gap-2 mb-4">
-      <input name="title" required placeholder="Judul" class="border rounded p-2">
-      <input name="excerpt" placeholder="Ringkasan singkat" class="border rounded p-2">
-      <textarea name="content" required rows="4" placeholder="Isi" class="border rounded p-2"></textarea>
-      <input name="coverUrl" placeholder="URL gambar sampul (opsional)" class="border rounded p-2">
-      <button class="bg-[#093C5D] text-white rounded py-2">Terbitkan</button></form>
-    <table class="w-full text-sm"><tbody id="press-body"></tbody></table></section>
+  <section class="card"><h2 class="font-semibold mb-1">Reset kata sandi anggota</h2>
+    <p class="text-xs text-slate-500 mb-3">Kata sandi tidak bisa dilihat siapa pun. Admin hanya bisa mengirim tautan reset ke email anggota.</p>
+    <form id="reset-form" class="flex gap-2"><input name="email" type="email" required placeholder="Email anggota" class="in"><button class="btnp whitespace-nowrap">Kirim tautan</button></form></section>
 
-  <section class="bg-white rounded-xl p-5 shadow-sm"><h2 class="font-semibold mb-3">Tambah karya ilmiah</h2>
-    <form id="karya-form" class="grid sm:grid-cols-2 gap-2">
-      <input name="title" required placeholder="Judul" class="border rounded p-2 sm:col-span-2">
-      <input name="authors" required placeholder="Penulis (pisahkan dengan koma)" class="border rounded p-2">
-      <input name="year" type="number" required placeholder="Tahun" class="border rounded p-2">
-      <input name="category" required placeholder="Kategori" class="border rounded p-2">
-      <input name="fileUrl" required placeholder="Link file (https://...)" class="border rounded p-2">
-      <textarea name="abstract" rows="3" placeholder="Abstrak" class="border rounded p-2 sm:col-span-2"></textarea>
-      <button class="bg-[#093C5D] text-white rounded py-2 sm:col-span-2">Simpan karya</button></form></section>
+  <section class="card"><h2 id="press-mode" class="font-semibold mb-3"></h2>
+    <form id="press-form" class="grid gap-3 mb-5">
+      <div><label>Judul</label><input name="title" required class="in"></div>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <div><label>Tanggal unggah</label><input name="publishedAt" type="date" required class="in"></div>
+        <div><label>Foto sampul (otomatis dikompres, tanpa URL)</label><input name="cover" type="file" accept="image/*" class="in"></div></div>
+      <div id="cover-preview"></div>
+      <label class="flex items-center gap-2"><input type="checkbox" name="removeCover"> Hapus foto saat ini (mode edit)</label>
+      <div><label>Ringkasan (tampil di daftar berita)</label><input name="excerpt" class="in"></div>
+      <div><label>Isi berita (pisahkan paragraf dengan baris kosong)</label><textarea name="content" required rows="7" class="in"></textarea></div>
+      <div class="flex gap-2"><button id="press-submit" class="btnp"></button><button type="button" id="press-cancel" class="hidden border rounded-lg px-4">Batal edit</button></div>
+    </form>
+    <table class="w-full text-sm"><thead><tr class="text-left"><th>Judul</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody id="press-body"></tbody></table></section>
 
-  <section class="bg-white rounded-xl p-5 shadow-sm"><h2 class="font-semibold mb-3">Buat URL pendek</h2>
+  <section class="card"><h2 class="font-semibold mb-3">Karya ilmiah</h2>
+    <form id="karya-form" class="grid sm:grid-cols-2 gap-3 mb-5">
+      <div class="sm:col-span-2"><label>Judul</label><input name="title" required class="in"></div>
+      <div><label>Penulis (pisahkan dengan koma)</label><input name="authors" required class="in"></div>
+      <div><label>Tahun</label><input name="year" type="number" required class="in"></div>
+      <div><label>Kategori</label><select name="category" id="karya-kategori" class="in"></select></div>
+      <div><label>Bidang</label><select name="bidang" id="karya-bidang" class="in"></select></div>
+      <div class="sm:col-span-2"><label>Link file (Drive dll., https://...)</label><input name="fileUrl" required class="in"></div>
+      <div class="sm:col-span-2"><label>Abstrak</label><textarea name="abstract" rows="3" class="in"></textarea></div>
+      <button class="btnp sm:col-span-2">Simpan karya</button></form>
+    <div class="grid sm:grid-cols-2 gap-5 mb-5 border-t pt-4">
+      <div><h3 class="text-sm font-semibold mb-2">Kelola kategori</h3><div id="chips-kategori" class="flex flex-wrap gap-2 mb-2"></div>
+        <form id="add-kategori" class="flex gap-2"><input name="v" placeholder="Kategori baru" class="in"><button class="btnp">Tambah</button></form></div>
+      <div><h3 class="text-sm font-semibold mb-2">Kelola bidang</h3><div id="chips-bidang" class="flex flex-wrap gap-2 mb-2"></div>
+        <form id="add-bidang" class="flex gap-2"><input name="v" placeholder="Bidang baru" class="in"><button class="btnp">Tambah</button></form></div></div>
+    <table class="w-full text-sm"><thead><tr class="text-left"><th>Judul</th><th>Tahun / kategori / bidang</th><th>Aksi</th></tr></thead><tbody id="karya-body"></tbody></table></section>
+
+  <section class="card"><h2 class="font-semibold mb-3">Materi latihan rutin (Larut)</h2>
+    <form id="materi-form" class="grid sm:grid-cols-2 gap-3 mb-5">
+      <div><label>Tanggal pertemuan</label><input name="date" type="date" required class="in"></div>
+      <div><label>Judul materi</label><input name="title" required class="in"></div>
+      <div class="sm:col-span-2"><label>Link file materi (Drive dll., https://...)</label><input name="fileUrl" required class="in"></div>
+      <div class="sm:col-span-2"><label>Keterangan (opsional)</label><textarea name="description" rows="2" class="in"></textarea></div>
+      <button class="btnp sm:col-span-2">Simpan materi</button></form>
+    <table class="w-full text-sm"><thead><tr class="text-left"><th>Hari, tanggal</th><th>Materi</th><th>Aksi</th></tr></thead><tbody id="materi-body"></tbody></table></section>
+
+  <section class="card"><h2 class="font-semibold mb-3">Buat URL pendek</h2>
     <form id="short-form" class="grid sm:grid-cols-3 gap-2">
-      <input name="targetUrl" required placeholder="URL tujuan (https://...)" class="border rounded p-2 sm:col-span-2">
-      <input name="slug" placeholder="Slug (opsional)" class="border rounded p-2">
-      <button class="bg-[#093C5D] text-white rounded py-2 sm:col-span-3">Buat tautan</button></form>
+      <input name="targetUrl" required placeholder="URL tujuan (https://...)" class="in sm:col-span-2"><input name="slug" placeholder="Slug (opsional)" class="in">
+      <button class="btnp sm:col-span-3">Buat tautan</button></form>
     <p id="short-result" class="mt-3 font-mono text-sm break-all"></p></section>
 
-  <section class="bg-white rounded-xl p-5 shadow-sm"><h2 class="font-semibold mb-3">Presensi QR</h2>
+  <section class="card"><h2 class="font-semibold mb-3">Presensi QR</h2>
     <form id="qr-form" class="grid sm:grid-cols-3 gap-2 mb-4">
-      <input name="title" required placeholder="Nama kegiatan" class="border rounded p-2 sm:col-span-2">
-      <select name="minutes" class="border rounded p-2"><option value="15">Berlaku 15 menit</option><option value="30">30 menit</option><option value="60" selected>60 menit</option><option value="180">3 jam</option></select>
-      <button class="bg-[#093C5D] text-white rounded py-2 sm:col-span-3">Buat sesi dan QR</button></form>
+      <input name="title" required placeholder="Nama kegiatan" class="in sm:col-span-2">
+      <select name="minutes" class="in"><option value="15">Berlaku 15 menit</option><option value="30">30 menit</option><option value="60" selected>60 menit</option><option value="180">3 jam</option></select>
+      <button class="btnp sm:col-span-3">Buat sesi dan QR</button></form>
     <div class="grid sm:grid-cols-2 gap-6">
       <div><p id="qr-title" class="font-medium mb-2"></p><div id="qr-box"></div></div>
       <div><table class="w-full text-sm"><thead><tr class="text-left"><th>Sesi</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="sesi-body"></tbody></table>

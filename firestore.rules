@@ -30,7 +30,12 @@ service cloud.firestore {
       allow delete: if false;
     }
 
-    match /publications/{id} { allow read: if true; allow create, update, delete: if isBph(); }
+    match /publications/{id} {
+      allow read: if true;
+      allow create, update: if isBph()
+        && (!('coverData' in request.resource.data) || request.resource.data.coverData.size() < 400000);
+      allow delete: if isBph();
+    }
     match /timeline/{id}     { allow read: if true; allow create, update, delete: if isBph(); }
     match /pengurus/{id}     { allow read: if true; allow create, update, delete: if isBph(); }
 
@@ -60,6 +65,9 @@ service cloud.firestore {
       allow update: if false;
       allow delete: if isBph();
     }
+
+    match /materi_larut/{id} { allow read: if isMember(); allow create, update, delete: if isBph(); }
+    match /settings/{id}     { allow read: if isMember(); allow create, update, delete: if isBph(); }
 
     match /{document=**} { allow read, write: if false; }
   }
