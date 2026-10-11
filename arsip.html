@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" type="image/png" href="img/favicon.png"><title>Arsip Karya Ilmiah | KIR LIBA</title></head>
+<body data-access="anggota" class="min-h-screen bg-[#093C5D]/95 p-4 sm:p-8">
+<div class="max-w-4xl mx-auto">
+  <header class="flex items-center justify-between mb-6 text-white">
+    <h1 class="text-2xl font-semibold">Arsip karya ilmiah</h1>
+    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="presensi.html" class="underline">Presensi</a><button id="logout" class="underline">Keluar</button></nav>
+  </header>
+  <input id="search" placeholder="Cari judul, penulis, atau kategori" class="w-full rounded-lg p-3 mb-5">
+  <div id="list" class="space-y-4"></div>
+</div>
+<script type="module">
+  import { guardPage, logout } from "./js/auth.js";
+  import { db } from "./js/firebase-config.js";
+  import { collection, query, orderBy, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  await guardPage("anggota");
+  document.getElementById("logout").onclick = logout;
+  const list = document.getElementById("list");
+  const snap = await getDocs(query(collection(db, "karya_ilmiah"), orderBy("year", "desc")));
+  const items = snap.docs.map((d) => d.data());
+  function render(rows) {
+    list.replaceChildren();
+    if (!rows.length) { const p = document.createElement("p"); p.className = "text-white/80"; p.textContent = "Tidak ada karya yang cocok."; return list.append(p); }
+    for (const x of rows) {
+      const c = document.createElement("article"); c.className = "bg-white/95 rounded-xl p-5";
+      const h = document.createElement("h2"); h.className = "font-semibold text-[#093C5D]"; h.textContent = x.title;
+      const m = document.createElement("p"); m.className = "text-xs text-[#355872] mb-2";
+      m.textContent = (x.authors || []).join(", ") + " (" + x.year + ") - " + x.category;
+      const a = document.createElement("p"); a.className = "text-sm text-[#355872] mb-3"; a.textContent = x.abstract;
+      const l = document.createElement("a"); l.textContent = "Buka file"; l.className = "text-sm underline text-[#093C5D]";
+      l.href = /^https?:\/\//i.test(x.fileUrl) ? x.fileUrl : "#"; l.target = "_blank"; l.rel = "noopener noreferrer";
+      c.append(h, m, a, l); list.append(c);
+    }
+  }
+  render(items);
+  document.getElementById("search").addEventListener("input", (e) => {
+    const q = e.target.value.toLowerCase();
+    render(items.filter((x) => [x.title, x.category, ...(x.authors || [])].join(" ").toLowerCase().includes(q)));
+  });
+</script></body></html>

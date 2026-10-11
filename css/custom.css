@@ -367,7 +367,18 @@ a:focus-visible { outline: 2px solid rgba(255,255,255,0.6); outline-offset: 3px;
     }
     .bp-avatar-icon { font-size: 40px; }
 }
-
+.bp-member-name-ar {
+    color: rgba(12, 86, 113, 0.7);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 2px;
+}
+.bp-member-role-ar {
+    color:rgba(12, 86, 113, 0.7);
+    font-size: 11px;
+    font-weight: 300;
+}
 .bp-member-name {
     color: #fff;
     font-size: 13px;

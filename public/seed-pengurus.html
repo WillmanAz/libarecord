@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Impor data pengurus | KIR LIBA</title>
+<script src="https://cdn.tailwindcss.com"></script></head>
+<body data-access="bph" class="p-8 bg-slate-100">
+<main class="max-w-md mx-auto bg-white rounded-xl p-6 space-y-4">
+  <h1 class="text-xl font-semibold">Impor data pengurus</h1>
+  <p class="text-sm">Mengisi koleksi <code>pengurus</code> dengan 15 pengurus dari web lama. Aman dijalankan ulang (dokumen ditimpa, tidak dobel). Hapus file ini dari hosting setelah selesai.</p>
+  <button id="go" class="w-full bg-[#093C5D] text-white rounded-lg py-3">Impor sekarang</button>
+  <p id="out" class="text-sm"></p>
+</main>
+<script type="module">
+  import { guardPage } from "./js/auth.js";
+  import { db } from "./js/firebase-config.js";
+  import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  await guardPage("bph");
+  const pengurus = [
+  {
+    "division": "Pembina",
+    "name": "Listya Sulastri Wulan Kurni,S.S, M.A.",
+    "role": "Pembina",
+    "photoUrl": "img/pembina-wulan.png",
+    "order": 1
+  },
+  {
+    "division": "Pembina",
+    "name": "Toni Haryadi, S.H.",
+    "role": "Pembina",
+    "photoUrl": "img/pembina-toni.png",
+    "order": 2
+  },
+  {
+    "division": "Ketua Umum",
+    "name": "Farah Alika Yudha L.",
+    "role": "Ketua Umum",
+    "photoUrl": "img/sekretaris-alika.jpg",
+    "order": 3
+  },
+  {
+    "division": "Wakil Ketua",
+    "name": "Khansa Auliya Maheswari",
+    "role": "Wakil Ketua",
+    "photoUrl": "img/wakil-.JPG",
+    "order": 4
+  },
+  {
+    "division": "Sekretaris",
+    "name": "Hilya Ayudya Dzakiyatunnisa",
+    "role": "Sekretaris I",
+    "photoUrl": "img/sekretaris-hilya.JPG",
+    "order": 5
+  },
+  {
+    "division": "Sekretaris",
+    "name": "Farah Alika Yudha",
+    "role": "Sekretaris II",
+    "photoUrl": "img/sekretaris-alika.JPG",
+    "order": 6
+  },
+  {
+    "division": "Bendahara",
+    "name": "Faizah Intan Yuliana P.",
+    "role": "Bendahara I",
+    "photoUrl": "img/bendahara-intan.JPG",
+    "order": 7
+  },
+  {
+    "division": "Bendahara",
+    "name": "Nadira Hanifa Shuba",
+    "role": "Bendahara II",
+    "photoUrl": "img/bendahara-nadira.jpg",
+    "order": 8
+  },
+  {
+    "division": "Humas",
+    "name": "Willman Arkana Zatari",
+    "role": "Humas I",
+    "photoUrl": "img/humas-willman.JPG",
+    "order": 9
+  },
+  {
+    "division": "Humas",
+    "name": "Hastiti Maryam Mabruroh",
+    "role": "Humas II",
+    "photoUrl": "img/humas-aik.JPG",
+    "order": 10
+  },
+  {
+    "division": "Diklat",
+    "name": "Al Afaafa Makruf Mahendra",
+    "role": "Koordinator Divisi Diklat",
+    "photoUrl": "img/diklat-alfa.JPG",
+    "order": 11
+  },
+  {
+    "division": "Diklat",
+    "name": "Salsabila Nur Hasan Anata",
+    "role": "Divisi Diklat",
+    "photoUrl": "img/diklat-aca.JPG",
+    "order": 12
+  },
+  {
+    "division": "Diklat",
+    "name": "Tazqiya Elvarina Azzahra",
+    "role": "Divisi Diklat",
+    "photoUrl": "img/diklat-ara.JPG",
+    "order": 13
+  },
+  {
+    "division": "Media",
+    "name": "Malika Fauzaty Kamilla",
+    "role": "Koordinator Divisi Media",
+    "photoUrl": "img/media-fauza.JPG",
+    "order": 14
+  },
+  {
+    "division": "Media",
+    "name": "Jaka Abimanyu Setia Putra",
+    "role": "Anggota Divisi Media",
+    "photoUrl": "img/media-jaka.JPG",
+    "order": 15
+  }
+];
+  document.getElementById("go").onclick = async (e) => {
+    e.target.disabled = true;
+    const out = document.getElementById("out");
+    try {
+      for (const p of pengurus) await setDoc(doc(db, "pengurus", "p" + String(p.order).padStart(3, "0")), p);
+      out.textContent = "Selesai: " + pengurus.length + " pengurus diimpor.";
+    } catch (err) { out.textContent = "Gagal: " + err.message; e.target.disabled = false; }
+  };
+</script></body></html>

@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><script src="https://cdn.tailwindcss.com"></script><link rel="icon" type="image/png" href="img/favicon.png"><title>Presensi | KIR LIBA</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script></head>
+<body data-access="anggota" class="min-h-screen bg-[#093C5D]/95 p-4">
+<main class="max-w-md mx-auto bg-white/95 rounded-2xl p-6 mt-6">
+  <div class="flex justify-between mb-4"><h1 class="text-xl font-semibold text-[#093C5D]">Presensi QR</h1><a href="arsip.html" class="text-sm underline text-[#355872]">Arsip</a></div>
+  <div id="reader" class="w-full"></div>
+  <p id="status" class="mt-4 text-center"></p>
+  <button id="retry" class="hidden mt-3 w-full bg-[#093C5D] text-white rounded-lg py-2">Pindai ulang</button>
+</main>
+<script type="module" src="js/presensi.js"></script></body></html>

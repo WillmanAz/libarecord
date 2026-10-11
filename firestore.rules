@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function userDoc() { return /databases/$(db)/documents/users/$(request.auth.uid); }
+    function role() {
+      return signedIn() && exists(userDoc()) ? get(userDoc()).data.role : 'none';
+    }
+    function isBph()    { return role() == 'bph'; }
+    function isMember() { return role() in ['anggota', 'bph']; }
+    function onlyChanges(keys) {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(keys);
+    }
+
+    match /users/{uid} {
+      allow get:  if signedIn() && (request.auth.uid == uid || isBph());
+      allow list: if isBph();
+      allow create: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['uid','email','displayName','role','createdAt'])
+        && request.resource.data.uid == uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.role == 'pending'
+        && request.resource.data.createdAt == request.time;
+      allow update: if signedIn() && request.auth.uid == uid && onlyChanges(['displayName']);
+      allow update: if isBph() && request.auth.uid != uid
+        && onlyChanges(['role','verifiedAt','verifiedBy'])
+        && request.resource.data.role in ['pending','anggota','bph','rejected'];
+      allow delete: if false;
+    }
+
+    match /publications/{id} { allow read: if true; allow create, update, delete: if isBph(); }
+    match /timeline/{id}     { allow read: if true; allow create, update, delete: if isBph(); }
+    match /pengurus/{id}     { allow read: if true; allow create, update, delete: if isBph(); }
+
+    match /karya_ilmiah/{id} { allow read: if isMember(); allow create, update, delete: if isBph(); }
+
+    match /shortlinks/{slug} {
+      allow get: if true;
+      allow list: if isBph();
+      allow create, delete: if isBph();
+      allow update: if isBph()
+        || (onlyChanges(['clicks']) && request.resource.data.clicks == resource.data.clicks + 1);
+    }
+
+    match /attendance_sessions/{sid} { allow read, write: if isBph(); }
+
+    match /attendance/{recId} {
+      allow read: if isBph() || (signedIn() && resource.data.uid == request.auth.uid);
+      allow create: if isMember()
+        && recId == request.resource.data.sessionId + '_' + request.auth.uid
+        && request.resource.data.keys().hasOnly(['sessionId','uid','token','scannedAt'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.scannedAt == request.time
+        && exists(/databases/$(db)/documents/attendance_sessions/$(request.resource.data.sessionId))
+        && get(/databases/$(db)/documents/attendance_sessions/$(request.resource.data.sessionId)).data.active == true
+        && get(/databases/$(db)/documents/attendance_sessions/$(request.resource.data.sessionId)).data.token == request.resource.data.token
+        && request.time < get(/databases/$(db)/documents/attendance_sessions/$(request.resource.data.sessionId)).data.expiresAt;
+      allow update: if false;
+      allow delete: if isBph();
+    }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}
