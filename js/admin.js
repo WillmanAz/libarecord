@@ -5,6 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { resetPassword } from "./auth.js";
 import { getKaryaOptions, saveKaryaOptions } from "./options.js";
+import { mountCrud, compressImage } from "./crud.js";
 
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
@@ -29,20 +30,6 @@ function emptyRow(tbody, cols, msg) {
   td.colSpan = cols; td.className = "p-3 text-center text-gray-500"; td.textContent = msg;
 }
 const ask = (msg) => { if (!confirm(msg)) throw new Error("batal"); };
-
-// Kompres foto di browser (maks 900px, JPEG) lalu simpan sebagai teks kecil di dokumen. Tanpa Storage/URL.
-async function compressImage(file) {
-  if (!file.type.startsWith("image/")) throw new Error("File harus berupa gambar.");
-  const bmp = await createImageBitmap(file);
-  const scale = Math.min(1, 900 / bmp.width);
-  const c = document.createElement("canvas");
-  c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
-  c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
-  let q = 0.78, out = c.toDataURL("image/jpeg", q);
-  while (out.length > 150000 && q > 0.4) { q -= 0.08; out = c.toDataURL("image/jpeg", q); }
-  if (out.length > 400000) throw new Error("Foto terlalu besar, pilih foto lain.");
-  return out;
-}
 
 /* ===== Verifikasi anggota ===== */
 export async function loadPendingMembers() {
@@ -97,7 +84,7 @@ function startEdit(id, x) {
   f.publishedAt.value = ymd(x.publishedAt || x.createdAt || Timestamp.now());
   f.cover.value = ""; f.removeCover.checked = false;
   const prev = $("cover-preview"); prev.replaceChildren();
-  const src = x.cover || x.coverUrl;
+  const src = x.thumb || x.cover || x.coverUrl;
   if (src) { const i = el("img", "h-24 rounded"); i.src = src; i.alt = "Foto saat ini"; prev.append(i); }
   $("press-mode").textContent = "Mengedit: " + x.title;
   $("press-submit").textContent = "Simpan perubahan";
@@ -115,7 +102,7 @@ async function renderPress() {
     tr.insertCell().textContent = fmt(x.publishedAt || x.createdAt);
     const a = tr.insertCell(); a.className = "flex gap-2 p-2";
     a.append(btn("Edit", "bg-[#355872]", async () => startEdit(d.id, x)),
-             btn("Hapus", "bg-red-600", async () => { ask("Hapus press release ini?"); await deleteDoc(d.ref); tr.remove(); }));
+             btn("Hapus", "bg-red-600", async () => { ask("Hapus press release ini?"); await deleteDoc(d.ref); await deleteDoc(doc(db, "publication_covers", d.id)).catch(() => {}); tr.remove(); }));
   });
 }
 function wirePress() {
@@ -129,45 +116,36 @@ function wirePress() {
         title: f.title.value.trim(), excerpt: f.excerpt.value.trim(), content: f.content.value.trim(),
         publishedAt: Timestamp.fromDate(fromYmd(f.publishedAt.value))
       };
-      const file = f.cover.files[0];
-      if (file) { data.cover = await compressImage(file); data.coverUrl = ""; }
-      else if (f.removeCover.checked) { data.cover = ""; data.coverUrl = ""; }
+      const file = f.cover.files[0], remove = f.removeCover.checked;
+      let full = null;
+      if (file) { data.thumb = await compressImage(file, 480, 28000); full = await compressImage(file, 900, 150000); data.cover = ""; data.coverUrl = ""; }
+      else if (remove) { data.thumb = ""; data.cover = ""; data.coverUrl = ""; }
+      let id = editId;
       if (editId) await updateDoc(doc(db, "publications", editId), { ...data, updatedAt: serverTimestamp() });
-      else await addDoc(collection(db, "publications"), { cover: "", ...data, createdAt: serverTimestamp(), createdBy: auth.currentUser.uid });
+      else { const ref = await addDoc(collection(db, "publications"), { thumb: "", cover: "", ...data, createdAt: serverTimestamp(), createdBy: auth.currentUser.uid }); id = ref.id; }
+      if (full) await setDoc(doc(db, "publication_covers", id), { data: full });
+      else if (remove) await deleteDoc(doc(db, "publication_covers", id)).catch(() => {});
       resetPressForm(); renderPress();
     } catch (err) { alert("Gagal: " + err.message); }
     b.disabled = false;
   });
 }
 
-/* ===== Karya ilmiah + kategori/bidang ===== */
-let opts;
-const fillSelect = (sel, list) => { sel.replaceChildren(); list.forEach((v) => { const o = el("option", "", v); o.value = v; sel.append(o); }); };
+/* ===== Karya ilmiah (kategori/bidang) + materi latihan: tambah, EDIT, hapus ===== */
+let opts, karyaCrud;
 function renderChips(key) {
   const box = $("chips-" + key); box.replaceChildren();
   opts[key].forEach((v, i) => {
     const chip = el("span", "inline-flex items-center gap-1 bg-slate-100 rounded-full px-3 py-1 text-sm", v);
-    const x = el("button", "text-red-600 font-bold ml-1", "×"); x.type = "button"; x.setAttribute("aria-label", "Hapus " + v);
+    const x = el("button", "text-red-600 font-bold ml-1", "\u00d7"); x.type = "button"; x.setAttribute("aria-label", "Hapus " + v);
     x.onclick = async () => { if (!confirm(`Hapus "${v}" dari pilihan? Karya lama tetap menyimpan labelnya.`)) return; opts[key].splice(i, 1); await saveKaryaOptions(opts); loadOptions(); };
     chip.append(x); box.append(chip);
   });
 }
 async function loadOptions() {
   opts = await getKaryaOptions();
-  fillSelect($("karya-kategori"), opts.kategori); fillSelect($("karya-bidang"), opts.bidang);
   renderChips("kategori"); renderChips("bidang");
-}
-async function renderKarya() {
-  const tbody = $("karya-body"); tbody.replaceChildren();
-  const snap = await getDocs(query(collection(db, "karya_ilmiah"), orderBy("createdAt", "desc"), limit(30)));
-  if (snap.empty) return emptyRow(tbody, 3, "Belum ada karya.");
-  snap.forEach((d) => {
-    const x = d.data(), tr = tbody.insertRow();
-    tr.insertCell().textContent = x.title;
-    tr.insertCell().textContent = [x.year, x.category, x.bidang].filter(Boolean).join(" / ");
-    const a = tr.insertCell(); a.className = "p-2";
-    a.append(btn("Hapus", "bg-red-600", async () => { ask("Hapus karya ini?"); await deleteDoc(d.ref); tr.remove(); }));
-  });
+  if (karyaCrud) karyaCrud.refreshOptions();
 }
 function wireKarya() {
   for (const key of ["kategori", "bidang"]) {
@@ -178,45 +156,31 @@ function wireKarya() {
       opts[key].push(v); await saveKaryaOptions(opts); e.target.reset(); loadOptions();
     });
   }
-  $("karya-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const f = e.target;
-    if (!isHttp(f.fileUrl.value.trim())) return alert("Link file harus diawali http(s)://");
-    await addDoc(collection(db, "karya_ilmiah"), {
-      title: f.title.value.trim(), authors: f.authors.value.split(",").map((s) => s.trim()).filter(Boolean),
-      year: Number(f.year.value), category: f.category.value, bidang: f.bidang.value,
-      abstract: f.abstract.value.trim(), fileUrl: f.fileUrl.value.trim(),
-      createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
-    });
-    f.reset(); renderKarya();
-  });
-}
-
-/* ===== Materi latihan rutin ===== */
-async function renderMateri() {
-  const tbody = $("materi-body"); tbody.replaceChildren();
-  const snap = await getDocs(query(collection(db, "materi_larut"), orderBy("date", "desc"), limit(30)));
-  if (snap.empty) return emptyRow(tbody, 3, "Belum ada materi.");
-  snap.forEach((d) => {
-    const x = d.data(), tr = tbody.insertRow();
-    tr.insertCell().textContent = `${x.hari}, ${fmt(x.date)}`;
-    tr.insertCell().textContent = x.title;
-    const a = tr.insertCell(); a.className = "p-2";
-    a.append(btn("Hapus", "bg-red-600", async () => { ask("Hapus materi ini?"); await deleteDoc(d.ref); tr.remove(); }));
+  karyaCrud = mountCrud($("crud-karya"), {
+    title: "Karya ilmiah", col: "karya_ilmiah", orderBy: ["createdAt", "desc"], max: 50,
+    label: (x) => `${x.title} (${[x.year, x.category, x.bidang].filter(Boolean).join(" / ")})`,
+    fields: [
+      { name: "title", label: "Judul", required: true, full: true },
+      { name: "authors", label: "Penulis (pisahkan dengan koma)", type: "list", required: true },
+      { name: "year", label: "Tahun", type: "number", required: true },
+      { name: "category", label: "Kategori", type: "select", optionsFn: async () => (await getKaryaOptions()).kategori },
+      { name: "bidang", label: "Bidang", type: "select", optionsFn: async () => (await getKaryaOptions()).bidang },
+      { name: "fileUrl", label: "Link file (Drive dll., https://...)", type: "url", required: true, full: true },
+      { name: "abstract", label: "Abstrak", type: "textarea" }
+    ]
   });
 }
 function wireMateri() {
-  $("materi-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const f = e.target;
-    if (!isHttp(f.fileUrl.value.trim())) return alert("Link file harus diawali http(s)://");
-    const dt = fromYmd(f.date.value);
-    await addDoc(collection(db, "materi_larut"), {
-      title: f.title.value.trim(), description: f.description.value.trim(), fileUrl: f.fileUrl.value.trim(),
-      date: Timestamp.fromDate(dt), hari: dt.toLocaleDateString("id-ID", { weekday: "long" }),
-      createdAt: serverTimestamp(), createdBy: auth.currentUser.uid
-    });
-    f.reset(); renderMateri();
+  mountCrud($("crud-materi"), {
+    title: "Materi latihan rutin (Larut)", col: "materi_larut", orderBy: ["date", "desc"], max: 50,
+    label: (x) => `${x.hari || ""}, ${fmt(x.date)}: ${x.title}`,
+    transform: (d) => ({ ...d, hari: d.date ? d.date.toDate().toLocaleDateString("id-ID", { weekday: "long" }) : "" }),
+    fields: [
+      { name: "date", label: "Tanggal pertemuan", type: "date", required: true },
+      { name: "title", label: "Judul materi", required: true },
+      { name: "fileUrl", label: "Link file materi (https://...)", type: "url", required: true, full: true },
+      { name: "description", label: "Keterangan (opsional)", type: "textarea" }
+    ]
   });
 }
 
@@ -253,7 +217,7 @@ async function renderSessions() {
 }
 function showQr(id, token, title) {
   const box = $("qr-box"); box.replaceChildren();
-  new QRCode(box, { text: `LIBA|${id}|${token}`, width: 240, height: 240 });
+  new QRCode(box, { text: `LIBA|${id}|${token}|${encodeURIComponent(title)}`, width: 280, height: 280, correctLevel: QRCode.CorrectLevel.M });
   $("qr-title").textContent = title;
 }
 async function showAttendance(sid, title) {
@@ -279,5 +243,5 @@ function wireQr() {
 export function initAdmin() {
   wireReset(); wirePress(); wireKarya(); wireMateri(); wireShort(); wireQr();
   const safe = (fn) => fn().catch((e) => console.error(fn.name, e));
-  [renderPending, renderPress, renderKarya, renderMateri, renderSessions, loadOptions].forEach(safe);
+  [renderPending, renderPress, renderSessions, loadOptions].forEach(safe);
 }

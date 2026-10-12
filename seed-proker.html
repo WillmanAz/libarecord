@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Impor data proker | KIR LIBA</title>
+<script src="https://cdn.tailwindcss.com"></script></head>
+<body data-access="bph" class="p-8 bg-slate-100">
+<main class="max-w-md mx-auto bg-white rounded-xl p-6 space-y-4">
+  <h1 class="text-xl font-semibold">Impor data proker</h1>
+  <p class="text-sm">Mengisi koleksi <code>timeline</code> dengan 8 data dari web lama. Aman dijalankan ulang (dokumen ditimpa, tidak dobel). Setelah itu kelola datanya lewat Admin organisasi, dan hapus file ini dari hosting.</p>
+  <button id="go" class="w-full bg-[#093C5D] text-white rounded-lg py-3">Impor sekarang</button>
+  <p id="out" class="text-sm"></p>
+</main>
+<script type="module">
+  import { guardPage } from "./js/auth.js";
+  import { db } from "./js/firebase-config.js";
+  import { doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  await guardPage("bph");
+  const data = [
+  {
+    "title": "Latihan Rutin (Larut)",
+    "dateLabel": "Setiap hari Senin atau Kamis",
+    "description": "Kegiatan Latihan rutin (Larut) merupakan pemberian materi secara rutin mengenai bagaimana cara membuat suatu penelitian, mulai dari judul hingga bab terakhir serta menjadi sesi bimbingan essay atau karya tulis yang nantinya akan dilombakan.",
+    "imageUrl": "img/proker-larut.png",
+    "order": 1
+  },
+  {
+    "title": "Pelantikan Anggota Baru (PAB)",
+    "dateLabel": "13 Desember 2026",
+    "description": "Pelantikan Anggota Baru KIR LIBA adalah program yang diisi dengan kegiatan-kegiatan yang memotivasi anggota baru untuk turut aktif dalam organisasi. Pada tahun ini KIR LIBA mengangkat tema \"Simfoni Kawruh : Harmoni Langkah Peneliti Muda\" sebagai harapan agar setiap calon peneliti muda dapat bersatu untuk membentuk simfoni yang bersatu dalam satu tujuan yang sama.",
+    "imageUrl": "img/proker-PAB.png",
+    "order": 2
+  },
+  {
+    "title": "Essay Liba Competition (E-LITION)",
+    "dateLabel": "17 Februari 2026",
+    "description": "Essay Liba Competition (E-LITION) adalah ajang kompetisi essay tingkat provinsi Jawa Tengah dan D.I. Yogyakarta. Tujuan diadakan kompetisi ini adalah untuk meningkatkan kemampuan siswa/i SMP se-Jateng dan DIY dalam pembuatan essay, sehingga menghasilkan peneliti muda yang dapat berpikir kritis dan peka terhadap perkembangan zaman.",
+    "imageUrl": "img/proker-elition.png",
+    "order": 3
+  },
+  {
+    "title": "Elbarkan & SharBa",
+    "dateLabel": "1 — 2 Maret 2026",
+    "description": "Elbarkan merupakan kegiatan berbuka bersama dengan seluruh anggota, pembina, dan pembimbing. Kegiatan ini bertujuan untuk mempererat hubungan dan meningkatkan rasa kebersamaan antar anggota serta memperkuat tali silaturahmi dalam organisasi. Sedangkan Sharing with LIBA (SharBa) merupakan kegiatan berbagi takjil di Bulan Ramadan yang diadakan oleh KIR LIBA untuk membantu dan menolong serta berbuat baik pada Bulan Ramadan.",
+    "imageUrl": "img/proker-sharba.png",
+    "order": 4
+  },
+  {
+    "title": "FGD MUN 2026",
+    "dateLabel": "30 Mei 2026",
+    "description": "Forum Group Discussion Model United Nations (FGD MUN 2026) adalah merupakan simulasi diplomasi pelajar berbentuk Model United Nations yang diselenggarakan oleh KIR LIBA MAN 1 Yogyakarta sebagai wadah edukatif dalam meningkatkan kemampuan public speaking, negosiasi, dan berpikir kritis. Peserta juga diajak menyelami dinamika dunia internasional sekaligus membangun nalar ilmiah dalam menyikapi isu global.",
+    "imageUrl": "img/proker-fgdmun.png",
+    "order": 5
+  },
+  {
+    "title": "Pelatihan Riset Esai (PERISAI)",
+    "dateLabel": "Selama Persiapan OPSI dan FIKSI",
+    "description": "PERISAI (Pelatihan Riset Esai) adalah program pelatihan dalam persiapan lomba OPSI dan FIKSI tahun 2026. Kegiatan ini membekali peserta dengan pemahaman struktur penelitian, teknik merumuskan gagasan, hingga menyusun argumen berbasis data serta menyusun ringkasan eksekutif, business model case (BMC), analisa SWOT, dan lain sebagainya. Tujuannya melatih keterampilan riset dan berwirausaha, berpikir kritis, dan menulis secara runtut.",
+    "imageUrl": "img/proker-perisai.png",
+    "order": 6
+  },
+  {
+    "title": "LUSTRUM VII KIR LIBA",
+    "dateLabel": "Comming Soon",
+    "description": "1 Agustus 2026",
+    "imageUrl": "img/proker-lustrum.png",
+    "order": 7
+  },
+  {
+    "title": "WEEKFACT",
+    "dateLabel": "Program Mingguan",
+    "description": "Weekfact merupakan program divisi kreatif dimana anggota KIR LIBA akan mengenalkan berbagai fakta-fakta dan informasi menarik yang disampaikan melalui akun instagram maupun tiktok KIR LIBA MAN 1 Yogyakarta.",
+    "imageUrl": "img/proker-8.png",
+    "order": 8
+  }
+];
+  document.getElementById("go").onclick = async (e) => {
+    e.target.disabled = true;
+    const out = document.getElementById("out");
+    try {
+      for (const x of data) await setDoc(doc(db, "timeline", "t" + String(x.order).padStart(3, "0")), x);
+      out.textContent = "Selesai: " + data.length + " data diimpor.";
+    } catch (err) { out.textContent = "Gagal: " + err.message; e.target.disabled = false; }
+  };
+</script></body></html>

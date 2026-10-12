@@ -6,7 +6,7 @@
 <body data-access="bph" class="bg-slate-100 p-4 sm:p-8">
 <div class="max-w-5xl mx-auto space-y-6">
   <header class="flex justify-between items-center"><h1 class="text-2xl font-semibold text-[#093C5D]">Dashboard BPH</h1>
-    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="arsip.html" class="underline">Arsip</a><a href="press.html" class="underline">Press</a><button id="logout" class="underline">Keluar</button></nav></header>
+    <nav class="flex gap-4 text-sm"><a href="index.html" class="underline">Beranda</a><a href="admin-organisasi.html" class="underline font-semibold">Admin organisasi</a><a href="arsip.html" class="underline">Arsip</a><a href="press.html" class="underline">Press</a><button id="logout" class="underline">Keluar</button></nav></header>
 
   <section class="card"><h2 class="font-semibold mb-3">Verifikasi pendaftar</h2>
     <table class="w-full text-sm"><thead><tr class="text-left"><th>Nama</th><th>Email</th><th>Aksi</th></tr></thead><tbody id="pending-body"></tbody></table></section>
@@ -29,31 +29,15 @@
     </form>
     <table class="w-full text-sm"><thead><tr class="text-left"><th>Judul</th><th>Tanggal</th><th>Aksi</th></tr></thead><tbody id="press-body"></tbody></table></section>
 
-  <section class="card"><h2 class="font-semibold mb-3">Karya ilmiah</h2>
-    <form id="karya-form" class="grid sm:grid-cols-2 gap-3 mb-5">
-      <div class="sm:col-span-2"><label>Judul</label><input name="title" required class="in"></div>
-      <div><label>Penulis (pisahkan dengan koma)</label><input name="authors" required class="in"></div>
-      <div><label>Tahun</label><input name="year" type="number" required class="in"></div>
-      <div><label>Kategori</label><select name="category" id="karya-kategori" class="in"></select></div>
-      <div><label>Bidang</label><select name="bidang" id="karya-bidang" class="in"></select></div>
-      <div class="sm:col-span-2"><label>Link file (Drive dll., https://...)</label><input name="fileUrl" required class="in"></div>
-      <div class="sm:col-span-2"><label>Abstrak</label><textarea name="abstract" rows="3" class="in"></textarea></div>
-      <button class="btnp sm:col-span-2">Simpan karya</button></form>
-    <div class="grid sm:grid-cols-2 gap-5 mb-5 border-t pt-4">
-      <div><h3 class="text-sm font-semibold mb-2">Kelola kategori</h3><div id="chips-kategori" class="flex flex-wrap gap-2 mb-2"></div>
+  <section class="card"><h2 class="font-semibold mb-3">Kelola kategori dan bidang karya</h2>
+    <div class="grid sm:grid-cols-2 gap-5">
+      <div><h3 class="text-sm font-semibold mb-2">Kategori</h3><div id="chips-kategori" class="flex flex-wrap gap-2 mb-2"></div>
         <form id="add-kategori" class="flex gap-2"><input name="v" placeholder="Kategori baru" class="in"><button class="btnp">Tambah</button></form></div>
-      <div><h3 class="text-sm font-semibold mb-2">Kelola bidang</h3><div id="chips-bidang" class="flex flex-wrap gap-2 mb-2"></div>
-        <form id="add-bidang" class="flex gap-2"><input name="v" placeholder="Bidang baru" class="in"><button class="btnp">Tambah</button></form></div></div>
-    <table class="w-full text-sm"><thead><tr class="text-left"><th>Judul</th><th>Tahun / kategori / bidang</th><th>Aksi</th></tr></thead><tbody id="karya-body"></tbody></table></section>
+      <div><h3 class="text-sm font-semibold mb-2">Bidang</h3><div id="chips-bidang" class="flex flex-wrap gap-2 mb-2"></div>
+        <form id="add-bidang" class="flex gap-2"><input name="v" placeholder="Bidang baru" class="in"><button class="btnp">Tambah</button></form></div></div></section>
+  <section id="crud-karya" class="card"></section>
 
-  <section class="card"><h2 class="font-semibold mb-3">Materi latihan rutin (Larut)</h2>
-    <form id="materi-form" class="grid sm:grid-cols-2 gap-3 mb-5">
-      <div><label>Tanggal pertemuan</label><input name="date" type="date" required class="in"></div>
-      <div><label>Judul materi</label><input name="title" required class="in"></div>
-      <div class="sm:col-span-2"><label>Link file materi (Drive dll., https://...)</label><input name="fileUrl" required class="in"></div>
-      <div class="sm:col-span-2"><label>Keterangan (opsional)</label><textarea name="description" rows="2" class="in"></textarea></div>
-      <button class="btnp sm:col-span-2">Simpan materi</button></form>
-    <table class="w-full text-sm"><thead><tr class="text-left"><th>Hari, tanggal</th><th>Materi</th><th>Aksi</th></tr></thead><tbody id="materi-body"></tbody></table></section>
+  <section id="crud-materi" class="card"></section>
 
   <section class="card"><h2 class="font-semibold mb-3">Buat URL pendek</h2>
     <form id="short-form" class="grid sm:grid-cols-3 gap-2">

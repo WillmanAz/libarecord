@@ -13,12 +13,13 @@ function say(msg, ok) {
 }
 
 async function onScan(text) {
-  const [tag, sid, token] = text.split("|");
-  if (tag !== "LIBA" || !/^[A-Za-z0-9]{10,40}$/.test(sid || "") || !token) return say("QR ini bukan QR presensi LIBA.", false);
+  const [tag, sid, token, rawTitle] = text.split("|");
+  const title = rawTitle ? decodeURIComponent(rawTitle) : "";
+  if (tag !== "LIBA" || !/^[A-Za-z0-9]{10,40}$/.test(sid || "") || !token || !title) return say("QR ini bukan QR presensi LIBA.", false);
   await scanner.stop().catch(() => {});
   try {
     await setDoc(doc(db, "attendance", `${sid}_${user.uid}`), {
-      sessionId: sid, uid: user.uid, token, scannedAt: serverTimestamp()
+      sessionId: sid, uid: user.uid, title, token, scannedAt: serverTimestamp()
     });
     say("Presensi tercatat. Terima kasih!", true);
   } catch (e) {

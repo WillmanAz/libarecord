@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akun Saya | KIR LIBA MAN 1 Yogyakarta</title><meta name="theme-color" content="#093C5D"><link rel="manifest" href="manifest.json">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&family=Oswald:wght@600&display=swap" rel="stylesheet">
+<style>body{font-family:'Raleway',sans-serif}.display{font-family:'Oswald',sans-serif;letter-spacing:.04em}.in{border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem;width:100%;background:#fff}label{font-size:.75rem;display:block;margin-bottom:2px}.btnp{background:#093C5D;color:#fff;border-radius:.5rem;padding:.5rem 1rem}.clamp3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}</style></head>
+<body data-access="anggota" class="min-h-screen bg-slate-100 text-[#355872]">
+<header style="background:linear-gradient(135deg,#093C5D,#355872)" class="text-white">
+  <div class="max-w-5xl mx-auto px-4 py-4 flex flex-wrap items-center justify-between gap-2">
+    <a href="index.html" class="display text-xl">KIR LIBA</a>
+    <nav class="flex flex-wrap gap-4 text-sm"><a href="kalender.html" class="underline">Kalender</a><a href="prestasi.html" class="underline">Prestasi</a><a href="galeri.html" class="underline">Galeri</a><a href="press.html" class="underline">Press</a><a href="portal.html" class="underline">Portal anggota</a></nav>
+  </div>
+  <div class="max-w-5xl mx-auto px-4 pb-8 pt-2"><h1 class="display text-3xl sm:text-4xl">Akun & Karya Saya</h1><p class="text-[#93BFCF] mt-1">Profil, riwayat presensi, dan pengajuan karya</p></div>
+</header>
+<main class="max-w-5xl mx-auto px-4 py-8"><section class="bg-white rounded-2xl shadow p-5 mb-6"><h2 class="font-semibold text-[#093C5D] mb-3">Profil</h2>
+ <form id="pf" class="grid gap-3"><div><label>Nama tampilan</label><input name="name" required maxlength="80" class="in"></div><div><label>Bio singkat (maks. 300 karakter)</label><textarea name="bio" maxlength="300" rows="2" class="in"></textarea></div><button class="btnp self-start">Simpan profil</button></form><p id="pf-msg" class="text-sm mt-2"></p></section>
+<section class="bg-white rounded-2xl shadow p-5 mb-6"><h2 class="font-semibold text-[#093C5D] mb-1">Karya saya</h2><p class="text-xs mb-3">Ajukan karya (link file). BPH akan menilai, memberi catatan revisi, lalu menyetujui. Karya yang disetujui masuk ke arsip.</p>
+ <form id="kf" class="grid sm:grid-cols-2 gap-3 mb-5"><div class="sm:col-span-2"><label>Judul</label><input name="title" required maxlength="200" class="in"></div>
+ <div><label>Kategori</label><select name="category" id="k-kat" class="in"></select></div><div><label>Bidang</label><select name="bidang" id="k-bid" class="in"></select></div>
+ <div class="sm:col-span-2"><label>Link file (Drive dll., https://...)</label><input name="fileUrl" type="url" required class="in"></div>
+ <div class="sm:col-span-2"><label>Catatan / ringkasan (maks. 500)</label><textarea name="note" maxlength="500" rows="2" class="in"></textarea></div>
+ <div class="flex gap-2 sm:col-span-2"><button id="k-submit" class="btnp">Ajukan karya</button><button type="button" id="k-cancel" class="hidden border rounded-lg px-4">Batal edit</button></div></form>
+ <div id="k-list" class="space-y-3"></div></section>
+<section class="bg-white rounded-2xl shadow p-5"><h2 class="font-semibold text-[#093C5D] mb-1">Riwayat presensi</h2><p id="a-sum" class="text-sm mb-3"></p><ul id="a-list" class="text-sm space-y-1"></ul></section>
+<p class="mt-6 text-sm"><a href="portal.html" class="underline">Kembali ke portal</a> | <button id="logout" class="underline">Keluar</button></p></main>
+<footer class="text-center text-xs py-6 text-slate-500">&copy; 2026 KIR LIBA MAN 1 Yogyakarta</footer>
+<script type="module">
+const $=(id)=>document.getElementById(id);
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!==undefined)e.textContent=x;return e;};
+const fmtD=(ts,o)=>ts?ts.toDate().toLocaleDateString("id-ID",o||{day:"numeric",month:"long",year:"numeric"}):"";
+const safeUrl=(u)=>(/^https?:\/\//i.test(u)?u:"#");
+import { db } from "./js/firebase-config.js";
+import { guardPage, logout } from "./js/auth.js";
+import { getKaryaOptions } from "./js/options.js";
+import { collection, query, where, getDocs, getDoc, doc, addDoc, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const { user } = await guardPage("anggota");
+$("logout").onclick = logout;
+const uref = doc(db,"users",user.uid);
+const prof = (await getDoc(uref)).data() || {};
+const pf = $("pf"); pf.name.value = prof.displayName || ""; pf.bio.value = prof.bio || "";
+pf.addEventListener("submit", async (e) => { e.preventDefault();
+  try { await updateDoc(uref, { displayName: pf.name.value.trim(), bio: pf.bio.value.trim() }); $("pf-msg").textContent = "Profil tersimpan."; } catch(err) { $("pf-msg").textContent = "Gagal: " + err.message; } });
+
+const BADGE = { diajukan:"bg-amber-100 text-amber-800", revisi:"bg-orange-100 text-orange-800", disetujui:"bg-green-100 text-green-800", ditolak:"bg-red-100 text-red-800" };
+const opts = await getKaryaOptions();
+[["k-kat",opts.kategori],["k-bid",opts.bidang]].forEach(([id,list])=>list.forEach(v=>{const o=el("option","",v);o.value=v;$(id).append(o);}));
+const kf = $("kf"); let editId = null;
+function resetK() { editId=null; kf.reset(); $("k-submit").textContent="Ajukan karya"; $("k-cancel").classList.add("hidden"); }
+$("k-cancel").onclick = resetK;
+kf.addEventListener("submit", async (e) => { e.preventDefault();
+  const d = { title: kf.title.value.trim(), category: kf.category.value, bidang: kf.bidang.value, fileUrl: kf.fileUrl.value.trim(), note: kf.note.value.trim() };
+  try {
+    if (editId) await updateDoc(doc(db,"submissions",editId), { ...d, status:"diajukan", updatedAt: serverTimestamp() });
+    else await addDoc(collection(db,"submissions"), { ...d, uid:user.uid, authorName: pf.name.value.trim() || user.email, status:"diajukan", createdAt: serverTimestamp() });
+    resetK(); loadK();
+  } catch(err) { alert("Gagal: " + err.message); } });
+async function loadK() {
+  const s = await getDocs(query(collection(db,"submissions"), where("uid","==",user.uid)));
+  const rows = s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  $("k-list").replaceChildren();
+  if(!rows.length) $("k-list").append(el("p","text-sm","Belum ada karya yang diajukan."));
+  rows.forEach(x=>{
+    const c = el("div","border rounded-xl p-3"); const t = el("div","font-medium");
+    t.append(el("span",`text-xs rounded-full px-2 py-0.5 mr-2 ${BADGE[x.status]||""}`,x.status), document.createTextNode(x.title));
+    const a = el("a","underline text-xs","Buka file"); a.href = /^https?:\/\//.test(x.fileUrl)?x.fileUrl:"#"; a.target="_blank"; a.rel="noopener noreferrer";
+    c.append(t, el("div","text-xs",[x.category,x.bidang,fmtD(x.createdAt)].filter(Boolean).join(" | ")), a);
+    if (x.feedback) c.append(el("div","text-sm mt-1 bg-slate-50 rounded p-2","Catatan BPH: " + x.feedback));
+    if (["diajukan","revisi"].includes(x.status)) {
+      const row = el("div","flex gap-2 mt-2");
+      const e1 = el("button","text-sm underline","Edit"); e1.onclick = () => { editId=x.id; kf.title.value=x.title; kf.category.value=x.category; kf.bidang.value=x.bidang; kf.fileUrl.value=x.fileUrl; kf.note.value=x.note||""; $("k-submit").textContent = x.status==="revisi" ? "Kirim revisi" : "Simpan perubahan"; $("k-cancel").classList.remove("hidden"); kf.scrollIntoView({behavior:"smooth"}); };
+      const e2 = el("button","text-sm underline text-red-700","Hapus"); e2.onclick = async () => { if(confirm("Hapus pengajuan ini?")) { await deleteDoc(doc(db,"submissions",x.id)); loadK(); } };
+      row.append(e1,e2); c.append(row);
+    }
+    $("k-list").append(c);
+  });
+}
+loadK().catch(e=>{console.error(e);$("k-list").textContent="Gagal memuat karya.";});
+
+try {
+  const a = await getDocs(query(collection(db,"attendance"), where("uid","==",user.uid)));
+  const rows = a.docs.map(d=>d.data()).sort((x,y)=>(y.scannedAt?.seconds||0)-(x.scannedAt?.seconds||0));
+  $("a-sum").textContent = rows.length + " kali hadir tercatat.";
+  rows.slice(0,50).forEach(x=>$("a-list").append(el("li","",fmtD(x.scannedAt,{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}) + " | " + (x.title||"Kegiatan"))));
+} catch(e) { console.error(e); $("a-sum").textContent = "Riwayat presensi belum dapat dimuat."; }
+
+</script></body></html>

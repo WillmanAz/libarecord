@@ -29,7 +29,7 @@ function render(role) {
     addItem("Status akun", "pending.html");
     addItem("Keluar", "#", logout);
   } else {
-    addItem("Portal", "arsip.html");
+    addItem("Portal", "portal.html");
     if (role === "bph") addItem("Admin", "admin.html");
     addItem("Keluar", "#", logout);
   }

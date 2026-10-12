@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    
+    <link rel="manifest" href="manifest.json"><meta name="theme-color" content="#093C5D">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1451,12 +1451,14 @@
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/parallax.min.js"></script>
     <script src="js/jquery.singlePageNav.min.js"></script>
-    <script src="js/proker-slider.js"></script>
-    <!-- js/bp-slider.js sekarang dimuat oleh blok <script type="module"> di bawah (setelah data pengurus dirender) -->
+   
+
     <script src="js/main.js"></script>
 
 
     <!-- ===================== TAMBAHAN: PORTAL + PENGURUS DARI FIRESTORE ===================== -->
+    <!-- ===================== TAMBAHAN: PORTAL + PENGURUS + PROKER DARI FIRESTORE ===================== -->
+    <!-- Ganti blok <script type="module">...</script> lama Anda dengan blok ini. -->
     <script type="module">
       import "./js/nav-auth.js"; // menu Masuk / Portal / Admin / Keluar di navbar lama
       import { db } from "./js/firebase-config.js";
@@ -1467,7 +1469,15 @@
       const btn = (cls, attrs, html) => { const b = mk("button", cls); for (const k in attrs) b.setAttribute(k, attrs[k]); if (html) b.innerHTML = html; return b; };
       const usedIds = new Set();
 
-      // Markup identik dengan versi statis (bp-avatar, bp-member-name, bp-member-role, dst.)
+      // Cache 10 menit di browser pengunjung: hemat kuota baca Firestore (paket gratis)
+      async function cached(key, fetcher, ttlMin = 10) {
+        try { const o = JSON.parse(localStorage.getItem(key) || "null"); if (o && Date.now() - o.t < ttlMin * 60000) return o.v; } catch (e) {}
+        const v = await fetcher();
+        try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), v })); } catch (e) {}
+        return v;
+      }
+
+      /* ---------------- PENGURUS (markup sama dengan versi statis) ---------------- */
       function member(m) {
         const slide = mk("div", "bp-member-slide");
         const av = mk("div", "bp-avatar");
@@ -1504,8 +1514,7 @@
         return c;
       }
 
-      // 3 divisi per slide, sama seperti desain lama; slide yang isinya < 3 dipusatkan (seperti slide Diklat & Media)
-      function render(groups) {
+      function renderPengurus(groups) {
         const track = $("bp-group-track"); track.replaceChildren();
         for (const g of groups) {
           const narrow = g.length < 3;
@@ -1520,52 +1529,90 @@
         if (lab.nextSibling) lab.nextSibling.textContent = " / " + groups.length;
       }
 
-      // Memuat js/bp-slider.js lama setelah DOM final. Listener DOMContentLoaded/load yang
-      // didaftarkan skrip itu dijalankan langsung karena kedua event tsb sudah lewat.
-      function loadOldSlider() {
-        const patch = (orig, target) => function (type, fn, opts) {
-          if (type === "DOMContentLoaded" || type === "load") { setTimeout(() => fn.call(target, new Event(type)), 0); return; }
-          return orig.call(target, type, fn, opts);
-        };
-        const restore = () => { delete document.addEventListener; delete window.addEventListener; };
-        document.addEventListener = patch(Document.prototype.addEventListener, document);
-        window.addEventListener = patch(EventTarget.prototype.addEventListener, window);
-        const s = document.createElement("script");
-        s.src = "js/bp-slider.js";
-        s.onload = s.onerror = restore;
-        document.body.append(s);
+      /* ---------------- PROKER (markup sama dengan slide statis) ---------------- */
+      function prokerSlide(x, i, n) {
+        const s = mk("div", "proker-slide px-8 py-5 flex flex-col items-center text-center");
+        const wrap = mk("div", "proker-img-wrap");
+        const img = document.createElement("img"); img.alt = x.title;
+        const fb = mk("div", "proker-img-fallback"); fb.style.display = "none"; fb.innerHTML = '<i class="fas fa-flask"></i>';
+        img.addEventListener("error", () => { img.style.display = "none"; fb.style.display = "flex"; });
+        if (x.imageUrl) img.src = x.imageUrl; else { img.style.display = "none"; fb.style.display = "flex"; }
+        wrap.append(img, fb);
+        const h = mk("h4", "text-base font-semibold mb-2"); h.style.color = "#355872";
+        h.append(document.createTextNode(x.title));
+        if (x.dateLabel) h.append(document.createElement("br"), document.createTextNode(x.dateLabel));
+        const p = mk("p", "text-white text-sm font-light leading-6", x.description || ""); p.style.color = "#355872";
+        const c = mk("div", "mt-3 text-white text-xs", `${i + 1} / ${n}`); c.style.opacity = "0.45";
+        s.append(wrap, h, p, c);
+        return s;
+      }
+      function renderProker(items) {
+        const track = $("proker-track"); track.replaceChildren();
+        items.forEach((x, i) => track.append(prokerSlide(x, i, items.length)));
+        const dots = $("proker-dots"); dots.replaceChildren();
+        items.forEach((_, i) => dots.append(btn("proker-dot " + (i ? "inactive" : "active"), { "data-index": String(i) })));
+      }
+
+      /* ---------------- Muat skrip slider lama SETELAH DOM final ---------------- */
+      function loadLate(srcs) {
+        return new Promise((resolve) => {
+          const patch = (orig, target) => function (type, fn, opts) {
+            if (type === "DOMContentLoaded" || type === "load") { setTimeout(() => fn.call(target, new Event(type)), 0); return; }
+            return orig.call(target, type, fn, opts);
+          };
+          document.addEventListener = patch(Document.prototype.addEventListener, document);
+          window.addEventListener = patch(EventTarget.prototype.addEventListener, window);
+          let i = 0;
+          const next = () => {
+            if (i >= srcs.length) { delete document.addEventListener; delete window.addEventListener; return resolve(); }
+            const s = document.createElement("script"); s.src = srcs[i++]; s.onload = s.onerror = next; document.body.append(s);
+          };
+          next();
+        });
       }
 
       (async () => {
+        // Pengurus
         try {
-          const snap = await getDocs(query(collection(db, "pengurus"), orderBy("order")));
-          if (!snap.empty) {
+          const rows = await cached("liba_pengurus_v1", async () => (await getDocs(query(collection(db, "pengurus"), orderBy("order")))).docs.map((d) => d.data()));
+          if (rows.length) {
             const byDiv = new Map();
-            snap.forEach((d) => { const x = d.data(); if (!byDiv.has(x.division)) byDiv.set(x.division, []); byDiv.get(x.division).push(x); });
+            rows.forEach((x) => { if (!byDiv.has(x.division)) byDiv.set(x.division, []); byDiv.get(x.division).push(x); });
             const entries = [...byDiv.entries()], groups = [];
             for (let i = 0; i < entries.length; i += 3) groups.push(entries.slice(i, i + 3));
-            render(groups);
+            renderPengurus(groups);
           }
         } catch (e) { console.error("Pengurus: memakai data statis di HTML", e); }
-        loadOldSlider();
+        // Proker
+        try {
+          const rows = await cached("liba_proker_v1", async () => (await getDocs(query(collection(db, "timeline"), orderBy("order")))).docs.map((d) => d.data()));
+          if (rows.length) renderProker(rows);
+        } catch (e) { console.error("Proker: memakai data statis di HTML", e); }
+        await loadLate(["js/bp-slider.js", "js/proker-slider.js"]);
       })();
-      // Press release terbaru di bagian Publikasi
+
+      /* ---------------- Press release terbaru (3 teratas menurut tanggal unggah) ---------------- */
       (async () => {
         const box = $("press-home");
         try {
-          const snap0 = await getDocs(query(collection(db, "publications"), orderBy("createdAt", "desc"), limit(20))); const dt = (x) => (x.publishedAt || x.createdAt)?.toDate?.().getTime() || 0; const top = snap0.docs.map((d) => d.data()).sort((a, b) => dt(b) - dt(a)).slice(0, 3); const snap = { empty: !top.length, forEach: (fn) => top.forEach((x) => fn({ data: () => x })) };
+          const top = await cached("liba_press_v1", async () => (await getDocs(query(collection(db, "publications"), orderBy("publishedAt", "desc"), limit(3)))).docs.map((d) => {
+            const x = d.data(), t = x.publishedAt || x.createdAt;
+            return { title: x.title, ms: t && t.toMillis ? t.toMillis() : 0, text: x.excerpt || (x.content || "").slice(0, 140) };
+          }));
           box.replaceChildren();
-          if (snap.empty) { box.textContent = "Belum ada press release."; return; }
-          snap.forEach((d) => {
-            const x = d.data();
+          if (!top.length) { box.textContent = "Belum ada press release."; return; }
+          top.forEach((x) => {
             const item = mk("div"); item.style.marginBottom = "16px";
             item.append(mk("div", "font-semibold", x.title));
-            const pd = x.publishedAt || x.createdAt; if (pd) { const t = mk("div", "text-xs", pd.toDate().toLocaleDateString("id-ID", { dateStyle: "long" })); t.style.opacity = ".7"; item.append(t); }
-            const ex = mk("div", "text-sm font-light", x.excerpt || (x.content || "").slice(0, 140)); item.append(ex);
+            if (x.ms) { const t = mk("div", "text-xs", new Date(x.ms).toLocaleDateString("id-ID", { dateStyle: "long" })); t.style.opacity = ".7"; item.append(t); }
+            item.append(mk("div", "text-sm font-light", x.text));
             box.append(item);
           });
         } catch (e) { console.error(e); box.textContent = "Press release belum dapat dimuat."; }
       })();
+
+      // PWA (opsional): bisa dipasang di layar HP
+      if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
     </script>
 
 </body>

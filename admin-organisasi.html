@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="id" style="visibility:hidden"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Admin Organisasi | KIR LIBA</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>.in{border:1px solid #cbd5e1;border-radius:.5rem;padding:.5rem;width:100%;background:#fff}.card{background:#fff;border-radius:.75rem;padding:1.25rem;box-shadow:0 1px 2px rgba(0,0,0,.06)}.btnp{background:#093C5D;color:#fff;border-radius:.5rem;padding:.5rem 1rem}label{font-size:.75rem;color:#355872;display:block;margin-bottom:2px}</style></head>
+<body data-access="bph" class="bg-slate-100 p-4 sm:p-8">
+<div class="max-w-5xl mx-auto space-y-6">
+  <header class="flex justify-between items-center"><h1 class="text-2xl font-semibold text-[#093C5D]">Admin Organisasi</h1>
+    <nav class="flex gap-4 text-sm"><a href="admin.html" class="underline">Dashboard utama</a><a href="portal.html" class="underline">Portal</a><a href="index.html" class="underline">Beranda</a><button id="logout" class="underline">Keluar</button></nav></header>
+  <nav id="toc" class="card text-sm flex flex-wrap gap-x-4 gap-y-1"><strong>Menu:</strong></nav>
+  <div id="sections" class="space-y-6"></div>
+</div>
+<script type="module">
+  import { guardPage, logout } from "./js/auth.js";
+  import { initOrg } from "./js/admin-org.js";
+  await guardPage("bph");
+  document.getElementById("logout").onclick = logout;
+  initOrg();
+</script></body></html>

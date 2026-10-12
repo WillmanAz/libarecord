@@ -6,7 +6,7 @@
 <body class="bg-white text-slate-800">
 <header class="border-b-4 border-[#093C5D]">
   <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-    <a href="press.html" class="display text-2xl text-[#093C5D]">LIBA <span class="text-[#5f8ea3]">RECORD</span></a>
+    <a href="press.html" class="display text-2xl text-[#093C5D]">LIBA <span class="text-[#5f8ea3]">PRESS</span></a>
     <a href="index.html" class="text-sm underline text-[#355872]">Kembali ke beranda</a>
   </div>
 </header>
@@ -18,9 +18,9 @@
   const app = document.getElementById("app");
   const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x !== undefined) e.textContent = x; return e; };
   const dateOf = (x) => { const t = x.publishedAt || x.createdAt; return t ? t.toDate().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) : ""; };
-  const imgOf = (x) => x.cover || x.coverUrl || "";
-  function cover(x, cls) {
-    const src = imgOf(x);
+  const imgOf = (x) => x.thumb || x.cover || x.coverUrl || "";
+  function cover(x, cls, big) {
+    const src = big || imgOf(x);
     if (src) { const i = el("img", cls + " object-cover w-full"); i.src = src; i.alt = x.title; i.loading = "lazy"; return i; }
     const ph = el("div", cls + " w-full flex items-center justify-center display text-4xl text-white/80", "LIBA");
     ph.style.background = "linear-gradient(135deg,#093C5D,#5f8ea3)"; return ph;
@@ -38,7 +38,9 @@
     art.append(back, el("p", "mt-6 text-xs font-semibold tracking-widest text-[#5f8ea3]", "PRESS RELEASE"),
       el("h1", "display text-3xl sm:text-5xl text-[#093C5D] leading-tight mt-2", x.title),
       el("p", "text-sm text-slate-500 mt-3 mb-6", dateOf(x) + " \u2022 KIR LIBA MAN 1 Yogyakarta"));
-    if (imgOf(x)) art.append(cover(x, "rounded-2xl max-h-[28rem] mb-8"));
+    let big = x.cover || x.coverUrl || "";
+    if (!big && x.thumb) { try { const c = await getDoc(doc(db, "publication_covers", id)); big = c.exists() ? c.data().data : x.thumb; } catch (e) { big = x.thumb; } }
+    if (big) art.append(cover(x, "rounded-2xl max-h-[28rem] mb-8", big));
     String(x.content || "").split(/\n{2,}/).forEach((p) => art.append(el("p", "text-lg leading-8 mb-5 whitespace-pre-line", p.trim())));
     app.append(art);
   }

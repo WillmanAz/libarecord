@@ -13,8 +13,8 @@ const ACCESS = {
   anggota: ["anggota", "bph"],
   bph:     ["bph"]
 };
-const HOME_BY_ROLE = { bph: "admin.html", anggota: "arsip.html", pending: "pending.html", rejected: "pending.html" };
-const PAGE_LEVEL = { "arsip.html": "anggota", "presensi.html": "anggota", "admin.html": "bph" };
+const HOME_BY_ROLE = { bph: "admin.html", anggota: "portal.html", pending: "pending.html", rejected: "pending.html" };
+const PAGE_LEVEL = { "arsip.html": "anggota", "presensi.html": "anggota", "portal.html": "anggota", "akun.html": "anggota", "admin.html": "bph", "admin-organisasi.html": "bph" };
 
 function safeNext(raw) { return /^[a-z0-9_-]+\.html$/i.test(raw || "") ? raw : null; }
 function canAccess(role, page) {

@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /admin-organisasi.html
+Disallow: /portal.html
+Disallow: /akun.html
+Disallow: /arsip.html
+Disallow: /presensi.html
+Disallow: /login.html
+Sitemap: https://libascienceclub.my.id/sitemap.xml
