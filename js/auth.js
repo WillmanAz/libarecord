@@ -1,7 +1,8 @@
 import { auth, db } from "./firebase-config.js";
 import {
   createUserWithEmailAndPassword, signInWithEmailAndPassword,
-  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail
+  signOut, onAuthStateChanged, updateProfile, sendPasswordResetEmail,
+  GoogleAuthProvider, signInWithPopup
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   doc, getDoc, setDoc, serverTimestamp
@@ -48,11 +49,20 @@ export async function register(name, email, password) {
   location.href = "pending.html";
 }
 
-export async function login(email, password) {
-  const cred = await signInWithEmailAndPassword(auth, email, password);
-  const role = await getRole(cred.user);
+function goAfterLogin(role) {
   const next = safeNext(new URLSearchParams(location.search).get("next"));
   location.href = next && canAccess(role, next) ? next : (HOME_BY_ROLE[role] || "pending.html");
+}
+
+export async function login(email, password) {
+  const cred = await signInWithEmailAndPassword(auth, email, password);
+  goAfterLogin(await getRole(cred.user));
+}
+
+// Masuk / daftar dengan akun Google. Pengguna baru otomatis berstatus "pending" sampai BPH memverifikasi.
+export async function loginWithGoogle() {
+  const cred = await signInWithPopup(auth, new GoogleAuthProvider());
+  goAfterLogin(await getRole(cred.user));
 }
 
 export async function resetPassword(email) {
